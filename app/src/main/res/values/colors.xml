@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">#094E89</color>
+    <color name="colorPrimaryVariant">#015CA0</color>
+    <color name="background">#EFEEEE</color>
+    <color name="colorSecondary">#729DC5</color>
+    <color name="colorSecondaryVariant">#9AB8D4</color>
+    <color name="ucrop_color_toolbar">@color/colorPrimaryVariant</color>
+    <color name="ucrop_color_statusbar">@color/colorPrimaryVariant</color>
+    <color name="ucrop_color_widget_active">@color/colorSecondary</color>
+</resources>
