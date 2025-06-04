@@ -10,7 +10,7 @@
         android:id="@+id/editBtn"
         android:layout_width="38dp"
         android:layout_height="38dp"
-        android:layout_marginHorizontal="8dp"
+        android:layout_marginStart="56dp"
         android:background="@color/background"
         android:clickable="true"
         android:contentDescription="edit button"
@@ -24,13 +24,15 @@
         app:carbon_rippleStyle="background"
         app:carbon_tint="@color/colorPrimaryVariant"
         app:layout_constraintEnd_toStartOf="@id/deleteBtn"
-        app:layout_constraintTop_toTopOf="@id/uploadImageTxt" />
+        app:layout_constraintStart_toStartOf="@id/uploadBtn"
+        app:layout_constraintTop_toTopOf="@id/deleteBtn" />
 
     <carbon.widget.ImageView
         android:id="@+id/deleteBtn"
         android:layout_width="38dp"
         android:layout_height="38dp"
-        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="56dp"
         android:background="@color/background"
         android:clickable="true"
         android:contentDescription="delete button"
@@ -43,28 +45,30 @@
         app:carbon_rippleColor="@color/colorSecondary"
         app:carbon_rippleStyle="background"
         app:carbon_tint="@color/colorPrimaryVariant"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/uploadBtn"
+        app:layout_constraintStart_toEndOf="@id/editBtn"
         app:layout_constraintTop_toTopOf="@id/uploadImageTxt" />
 
     <carbon.widget.TextView
         android:id="@+id/uploadImageTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
         android:text="Upload Image"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/uploadBtn"
         app:layout_constraintTop_toTopOf="parent" />
 
     <carbon.widget.ImageView
         android:id="@+id/uploadBtn"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:layout_marginHorizontal="70dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginHorizontal="28dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/carbon_blueGrey_100"
         android:clickable="true"
         android:contentDescription="upload image"
         android:focusable="true"
@@ -72,94 +76,140 @@
         app:carbon_cornerRadius="24dp"
         app:carbon_rippleColor="@color/colorSecondary"
         app:carbon_rippleStyle="background"
-        app:carbon_stroke="@color/colorPrimary"
-        app:carbon_strokeWidth="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/uploadImageTxt" />
+        app:layout_constraintTop_toBottomOf="@id/deleteBtn" />
 
-    <carbon.widget.TextView
-        android:id="@+id/addPhoneNoTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/leaguespartan_variablefont_wght"
-        android:text="Add Phone Number"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/uploadBtn" />
-
-    <carbon.widget.EditText
-        android:id="@+id/addPhoneNoEdTxt"
+    <carbon.widget.RelativeLayout
+        android:id="@+id/phoneNoCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="42dp"
-        android:layout_marginTop="5dp"
-        android:background="@color/background"
-        android:fontFamily="@font/leaguespartan_variablefont_wght"
-        android:hint="10 digit phone number"
-        android:inputType="phone"
-        android:maxLength="10"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="28dp"
+        android:animateLayoutChanges="true"
+        android:background="@color/carbon_blueGrey_100"
         android:padding="12dp"
-        android:textColor="@color/colorPrimaryVariant"
-        android:textColorHint="@color/colorSecondary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:carbon_cornerRadius="14dp"
-        app:carbon_rippleColor="@color/colorSecondaryVariant"
-        app:carbon_rippleStyle="background"
-        app:carbon_stroke="@color/colorPrimary"
-        app:carbon_strokeWidth="2dp"
+        app:carbon_cornerRadius="16dp"
         app:layout_constraintEnd_toEndOf="@id/uploadBtn"
         app:layout_constraintStart_toStartOf="@id/uploadBtn"
-        app:layout_constraintTop_toBottomOf="@id/addPhoneNoTxt" />
+        app:layout_constraintTop_toBottomOf="@id/uploadBtn">
 
-    <carbon.widget.TextView
-        android:id="@+id/addAddressTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/leaguespartan_variablefont_wght"
-        android:text="Add Address"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/addPhoneNoEdTxt" />
+        <carbon.widget.ImageView
+            android:id="@+id/callIcon"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            android:background="@color/carbon_green_a200"
+            android:padding="6dp"
+            android:src="@drawable/ic_phone"
+            app:carbon_cornerRadius="8dp"
+            app:carbon_tint="@color/carbon_green_900" />
 
-    <carbon.widget.EditText
-        android:id="@+id/addAddressEdTxt"
+        <carbon.widget.TextView
+            android:id="@+id/addPhoneNoTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@id/callIcon"
+            android:fontFamily="@font/leaguespartan_variablefont_wght"
+            android:text="Add Phone Number"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <carbon.widget.EditText
+            android:id="@+id/addPhoneNoEdTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/addPhoneNoTxt"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/callIcon"
+            android:background="@color/background"
+            android:fontFamily="@font/leaguespartan_variablefont_wght"
+            android:hint="10 digit phone number"
+            android:inputType="phone"
+            android:maxLength="10"
+            android:padding="12dp"
+            android:textColor="@color/colorPrimaryVariant"
+            android:textColorHint="@color/colorSecondary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:carbon_cornerRadius="14dp"
+            app:carbon_rippleColor="@color/colorSecondaryVariant"
+            app:carbon_rippleStyle="background" />
+
+    </carbon.widget.RelativeLayout>
+
+    <carbon.widget.RelativeLayout
+        android:id="@+id/addressCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="42dp"
-        android:layout_marginTop="5dp"
-        android:background="@color/background"
-        android:fontFamily="@font/leaguespartan_variablefont_wght"
-        android:hint="Add address"
-        android:inputType="textPostalAddress|textMultiLine"
-        android:maxLines="5"
-        android:minLines="2"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="28dp"
+        android:animateLayoutChanges="true"
+        android:background="@color/carbon_blueGrey_100"
         android:padding="12dp"
-        android:textColor="@color/colorPrimaryVariant"
-        android:textColorHint="@color/colorSecondary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:carbon_cornerRadius="14dp"
-        app:carbon_rippleColor="@color/colorSecondaryVariant"
-        app:carbon_rippleStyle="background"
-        app:carbon_stroke="@color/colorPrimary"
-        app:carbon_strokeWidth="2dp"
+        app:carbon_cornerRadius="16dp"
         app:layout_constraintEnd_toEndOf="@id/uploadBtn"
         app:layout_constraintStart_toStartOf="@id/uploadBtn"
-        app:layout_constraintTop_toBottomOf="@id/addAddressTxt" />
+        app:layout_constraintTop_toBottomOf="@id/phoneNoCard">
+
+        <carbon.widget.ImageView
+            android:id="@+id/locationIcon"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            android:background="@color/carbon_orange_a100"
+            android:padding="6dp"
+            android:src="@drawable/ic_location"
+            app:carbon_cornerRadius="8dp"
+            app:carbon_tint="@color/carbon_orange_900" />
+
+        <carbon.widget.TextView
+            android:id="@+id/addAddressTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@id/locationIcon"
+            android:fontFamily="@font/leaguespartan_variablefont_wght"
+            android:text="Add Address"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <carbon.widget.EditText
+            android:id="@+id/addAddressEdTxt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/addAddressTxt"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/locationIcon"
+            android:background="@color/background"
+            android:fontFamily="@font/leaguespartan_variablefont_wght"
+            android:hint="Add address"
+            android:inputType="textPostalAddress|textMultiLine"
+            android:maxLines="5"
+            android:minLines="2"
+            android:padding="12dp"
+            android:textColor="@color/colorPrimaryVariant"
+            android:textColorHint="@color/colorSecondary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:carbon_cornerRadius="14dp"
+            app:carbon_rippleColor="@color/colorSecondaryVariant"
+            app:carbon_rippleStyle="background" />
+
+    </carbon.widget.RelativeLayout>
 
     <carbon.widget.TextView
         android:id="@+id/createdAtTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="28dp"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
         android:text="Created At"
@@ -168,14 +218,14 @@
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/addAddressEdTxt" />
+        app:layout_constraintTop_toBottomOf="@id/addressCard" />
 
     <carbon.widget.TextView
         android:id="@+id/updatedAtTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="28dp"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
         android:text="Updated At"
         android:textAlignment="viewEnd"
@@ -183,13 +233,12 @@
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/addAddressEdTxt" />
+        app:layout_constraintTop_toBottomOf="@id/addressCard" />
 
     <carbon.widget.TextView
         android:id="@+id/createdDateTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="2dp"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
         android:maxLines="1"
@@ -198,14 +247,14 @@
         android:textSize="14sp"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/createdAtTxt"
+        app:layout_constraintStart_toStartOf="@id/createdAtTxt"
         app:layout_constraintTop_toBottomOf="@id/createdAtTxt" />
 
     <carbon.widget.TextView
         android:id="@+id/createdTimeTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="2dp"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
         android:maxLines="1"
@@ -214,7 +263,8 @@
         android:textSize="14sp"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/createdAtTxt"
+        app:layout_constraintStart_toStartOf="@id/createdAtTxt"
         app:layout_constraintTop_toBottomOf="@id/createdDateTxt" />
 
     <carbon.widget.TextView
@@ -222,7 +272,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:layout_marginEnd="16dp"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
         android:maxLines="1"
         android:text="date"
@@ -230,7 +279,8 @@
         android:textSize="14sp"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/updatedAtTxt"
+        app:layout_constraintStart_toStartOf="@id/updatedAtTxt"
         app:layout_constraintTop_toBottomOf="@id/updatedAtTxt" />
 
     <carbon.widget.TextView
@@ -238,7 +288,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:layout_marginEnd="16dp"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
         android:maxLines="1"
         android:text="time"
@@ -246,7 +295,8 @@
         android:textSize="14sp"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/updatedAtTxt"
+        app:layout_constraintStart_toStartOf="@id/updatedAtTxt"
         app:layout_constraintTop_toBottomOf="@id/updatedDateTxt" />
 
     <carbon.widget.Button

@@ -66,7 +66,8 @@ class MainActivity : AppCompatActivity() {
     private var isEditing = false
     private var docId: String = ""
     private var oldImageUrl: String = ""
-    private var showSkeleton: Boolean = true
+
+    //    private var showSkeleton: Boolean = true
     private val TAG = "xyz"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -131,7 +132,6 @@ class MainActivity : AppCompatActivity() {
 
                 override fun afterTextChanged(s: Editable?) {}
             })
-
 
             val builder = AlertDialog.Builder(this)
             val customLayout: View = layoutInflater.inflate(R.layout.list_item_layout, null)
@@ -377,7 +377,6 @@ class MainActivity : AppCompatActivity() {
         getData()
     }
 
-
     private fun updateData(newImageUrl: Uri, newPhone: String, newAddress: String, docId: String) {
         val uid = firebaseAuth.currentUser?.uid ?: return
 
@@ -411,7 +410,6 @@ class MainActivity : AppCompatActivity() {
             }
         getData()
     }
-
 
     private fun getData() {
         val uid = firebaseAuth.currentUser?.uid ?: return
@@ -521,7 +519,6 @@ class MainActivity : AppCompatActivity() {
             super.onBackPressed()
         }
     }
-
 
     companion object {
         private const val IMAGE_PICKER_REQUEST_CODE = 1001
