@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.devshiv.holesale.R
+import com.devshiv.holesale.Utils
+import com.devshiv.holesale.Utils.Companion.transparentStatusAndNavigation
 import com.devshiv.holesale.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {
@@ -17,13 +19,10 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        window.transparentStatusAndNavigation()
+
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         val intent = Intent(this, SignInActivity::class.java)
         startActivity(intent)

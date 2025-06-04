@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.credentials.Credential
@@ -15,6 +16,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.lifecycleScope
 import com.devshiv.holesale.R
+import com.devshiv.holesale.Utils
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
@@ -40,15 +42,16 @@ class SignInActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+
+        Utils.changeSystemBarsColor(
+            window, binding.root,
+            ContextCompat.getColor(this, R.color.colorPrimaryVariant),
+            ContextCompat.getColor(this, R.color.colorPrimaryVariant)
+        )
+
         binding.googleBtn.setOnClickListener {
-//            Log.d("xyz", "onCreate: clicked")
             launchCredentialManager()
         }
     }
@@ -67,6 +70,7 @@ class SignInActivity : AppCompatActivity() {
         val request = GetCredentialRequest.Builder()
             .addCredentialOption(googleOption)
             .build()
+
         lifecycleScope.launch {
             try {
                 val result = credentialManager.getCredential(
@@ -75,7 +79,7 @@ class SignInActivity : AppCompatActivity() {
                 )
                 handleSignIn(result.credential)
             } catch (e: GetCredentialException) {
-                Log.e("xyz", "launchCredentialManager: ${e.localizedMessage}", e)
+                Log.e(Utils.TAG, "launchCredentialManager: ${e.localizedMessage}", e)
             }
         }
     }
@@ -85,7 +89,7 @@ class SignInActivity : AppCompatActivity() {
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
             firebaseAuthWithGoogle(googleIdTokenCredential.idToken)
         } else {
-            Log.w("xyz", "Credential is not of type Google ID!")
+            Log.w(Utils.TAG, "Credential is not of type Google ID!")
         }
     }
 
@@ -94,21 +98,25 @@ class SignInActivity : AppCompatActivity() {
         firebaseAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Log.d("xyz", "signInWithCredential:success")
+                    Log.d(Utils.TAG, "signInWithCredential:success")
                     val user = firebaseAuth.currentUser
                     val isNewUser = task.result.additionalUserInfo?.isNewUser == true
                     updateUI(user, isNewUser)
                 } else {
-                    Log.w("xyz", "signInWithCredential:failure", task.exception)
-                    Toast.makeText(this, "Failed to sign you in, please try again!!!", Toast.LENGTH_SHORT).show()
-//                    updateUI(null)
+                    Log.w(Utils.TAG, "signInWithCredential:failure", task.exception)
+                    Toast.makeText(
+                        this,
+                        "Failed to sign you in, please try again!!!",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
     }
 
     private fun updateUI(currentUser: FirebaseUser?, isNewUser: Boolean = false) {
         if (currentUser != null) {
-            val message = if (isNewUser) "Signed in Successfully" else "Welcome Back ${currentUser.displayName}"
+            val message =
+                if (isNewUser) "Sign Up Successful!" else "Welcome Back ${currentUser.displayName}"
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)

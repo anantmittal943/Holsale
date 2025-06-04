@@ -3,20 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/background"
     tools:context=".activity.MainActivity">
 
     <carbon.widget.RelativeLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
-        android:layout_height="82dp"
+        android:layout_height="60dp"
         android:background="@color/colorPrimaryVariant"
         android:elevation="2dp"
-        app:carbon_cornerRadiusBottomEnd="24dp"
-        app:carbon_cornerRadiusBottomStart="24dp"
+        app:carbon_cornerRadiusBottomEnd="14dp"
+        app:carbon_cornerRadiusBottomStart="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -30,7 +30,7 @@
             android:fontFamily="@font/overlockregular"
             android:text="Hi, Name"
             android:textColor="@color/background"
-            android:textSize="32sp"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
         <carbon.widget.EditText
@@ -82,7 +82,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="4dp"
-        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +92,7 @@
     <carbon.widget.ImageView
         android:id="@+id/noDataImg"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="220dp"
         android:src="@drawable/no_data"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/addListBtn"
@@ -103,34 +103,33 @@
     <carbon.widget.TextView
         android:id="@+id/startAddingTxt"
         android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
-        android:text="Start by adding a new list!!"
+        android:text="Add Your First Item!"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/noDataImg"
-        app:layout_constraintStart_toStartOf="@id/noDataImg"
-        app:layout_constraintTop_toBottomOf="@id/noDataImg" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <carbon.widget.ImageView
         android:id="@+id/addListBtn"
-        android:layout_width="62dp"
-        android:layout_height="62dp"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
         android:layout_margin="20dp"
-        android:background="@color/colorSecondary"
-        android:clickable="true"
-        android:contentDescription="add a new list"
-        android:elevation="8dp"
-        android:focusable="true"
+        android:background="@color/colorPrimaryVariant"
         android:padding="12dp"
         android:src="@drawable/ic_plus"
         app:carbon_cornerRadius="16dp"
+        app:carbon_elevation="10dp"
+        app:carbon_elevationShadowColor="@color/black"
         app:carbon_rippleColor="@color/colorPrimaryVariant"
         app:carbon_rippleHotspot="true"
         app:carbon_rippleRadius="50dp"
         app:carbon_rippleStyle="background"
-        app:carbon_tint="@color/carbon_black_87"
+        app:carbon_tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
