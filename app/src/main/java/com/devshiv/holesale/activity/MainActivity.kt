@@ -3,6 +3,7 @@ package com.devshiv.holesale.activity
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.net.Uri
@@ -44,6 +45,11 @@ import com.devshiv.holesale.R
 import com.devshiv.holesale.model.UserModel
 import com.faltenreich.skeletonlayout.Skeleton
 import com.faltenreich.skeletonlayout.applySkeleton
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.Priority
+import com.google.android.gms.location.SettingsClient
 
 class MainActivity : AppCompatActivity() {
 
@@ -212,10 +218,11 @@ class MainActivity : AppCompatActivity() {
 //                getData()
             }
             binding.addListBtn.setOnClickListener {
-                fetchCurrentAddress { address ->
+                checkLocationEnabled()
+                /*fetchCurrentAddress { address ->
                     addAddressEdTxt.setText(address)
                     Log.d(TAG, "address: $address")
-                }
+                }*/
                 dialog.show()
             }
 
@@ -296,6 +303,16 @@ class MainActivity : AppCompatActivity() {
             Glide.with(this)
                 .load(uploadImageUrl)
                 .into(uploadBtn)
+        }
+        if (requestCode == REQUEST_LOCATION_CODE) {
+            if (resultCode == RESULT_OK) {
+                fetchCurrentAddress { address ->
+                    addAddressEdTxt.setText(address)
+                    Log.d(TAG, "address: $address")
+                }
+            } else {
+                Toast.makeText(this, "Please turn on location services", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -457,7 +474,7 @@ class MainActivity : AppCompatActivity() {
     private fun fetchCurrentAddress(onAddressFetched: (String) -> Unit) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             pendingAddressCallback = onAddressFetched
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), ADDRESS_LOCATION_PERMISSION_REQUEST_CODE)
             Log.e(TAG, "fetchCurrentAddress: permission not granted or denied")
             return
         } else {
@@ -477,12 +494,14 @@ class MainActivity : AppCompatActivity() {
                             addAddressEdTxt.hint = "Add address manually"
                         }
                     } else {
+//                        checkLocationEnabled()
                         Toast.makeText(this, "Location is null!!", Toast.LENGTH_SHORT).show()
                         onAddressFetched("")
                         addAddressEdTxt.hint = "Add address manually"
                     }
                 }
                 .addOnFailureListener {
+//                    checkLocationEnabled()
                     Log.e("Location", "Failed to get location", it)
                     Toast.makeText(this, "Failed to get Location", Toast.LENGTH_SHORT).show()
                     onAddressFetched("")
@@ -493,7 +512,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+        if (requestCode == ADDRESS_LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 pendingAddressCallback?.let {
                     fetchCurrentAddress(it)
@@ -520,9 +539,43 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkLocationEnabled() {
+        val locationRequest = LocationRequest.create().apply {
+            priority = Priority.PRIORITY_HIGH_ACCURACY
+        }
+
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+            .setAlwaysShow(true) // shows dialog even if previously cancelled
+
+        val client: SettingsClient = LocationServices.getSettingsClient(this)
+        val task = client.checkLocationSettings(builder.build())
+
+        task.addOnSuccessListener {
+            fetchCurrentAddress { address ->
+                addAddressEdTxt.setText(address)
+                Log.d(TAG, "address: $address")
+            }
+        }
+
+        task.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                try {
+                    exception.startResolutionForResult(this@MainActivity, REQUEST_LOCATION_CODE)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    Log.e("LocationCheck", "Error showing dialog: ${sendEx.message}")
+                }
+            } else {
+                Toast.makeText(this, "Location is required but not available", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
     companion object {
         private const val IMAGE_PICKER_REQUEST_CODE = 1001
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1010
+        private const val ADDRESS_LOCATION_PERMISSION_REQUEST_CODE = 1010
+        private const val REQUEST_LOCATION_CODE = 101
     }
 
 }

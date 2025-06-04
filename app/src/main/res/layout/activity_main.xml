@@ -103,16 +103,15 @@
     <carbon.widget.TextView
         android:id="@+id/startAddingTxt"
         android:layout_width="wrap_content"
-        android:visibility="gone"
         android:layout_height="wrap_content"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
         android:text="Add Your First Item!"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/noDataImg" />
 
     <carbon.widget.ImageView
         android:id="@+id/addListBtn"
