@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1002488127155",
+    "project_id": "holsale-61ea5",
+    "storage_bucket": "holsale-61ea5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1002488127155:android:25dd5b1fe1390b3d5b9ac6",
+        "android_client_info": {
+          "package_name": "com.devshiv.holesale"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1002488127155-i99rsi5vqmoh3i1bej4hp8bbgg60rl3c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.devshiv.holesale",
+            "certificate_hash": "39b1ffd00ef867feb414a39d85b184e5a1ba5f24"
+          }
+        },
+        {
+          "client_id": "1002488127155-k406dfor3ajpvk29d4perg4u5rupr619.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMZonQ_OyFcnOp1XoOinb9hz9nJF7ZRDE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1002488127155-k406dfor3ajpvk29d4perg4u5rupr619.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/background"
+    tools:context=".activity.MainActivity">
+
+    <carbon.widget.RelativeLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/colorPrimaryVariant"
+        android:elevation="2dp"
+        app:carbon_cornerRadiusBottomEnd="14dp"
+        app:carbon_cornerRadiusBottomStart="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <carbon.widget.TextView
+            android:id="@+id/nameTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="24dp"
+            android:fontFamily="@font/overlockregular"
+            android:text="Hi, Name"
+            android:textColor="@color/background"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <carbon.widget.EditText
+            android:id="@+id/searchBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="24dp"
+            android:background="@color/colorPrimaryVariant"
+            android:elevation="3dp"
+            android:fontFamily="@font/leaguespartan_variablefont_wght"
+            android:hint="Enter phone number"
+            android:imeOptions="actionSearch"
+            android:inputType="phone"
+            android:maxLength="10"
+            android:maxLines="1"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="4dp"
+            android:textColor="@color/background"
+            android:textColorHint="@color/background"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:carbon_cornerRadius="10dp"
+            app:carbon_stroke="@color/colorSecondary"
+            app:carbon_strokeWidth="2dp" />
+
+        <carbon.widget.ImageView
+            android:id="@+id/searchBtn"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+            android:contentDescription="search by phone number"
+            android:focusable="true"
+            android:padding="8dp"
+            android:src="@drawable/ic_search"
+            app:carbon_cornerRadius="42dp"
+            app:carbon_rippleColor="@color/colorSecondaryVariant"
+            app:carbon_rippleStyle="over"
+            app:carbon_tint="@color/background" />
+
+    </carbon.widget.RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listRV"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="4dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        tools:listitem="@layout/main_item_layout" />
+
+    <carbon.widget.ImageView
+        android:id="@+id/noDataImg"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:src="@drawable/no_data"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/addListBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topBar" />
+
+    <carbon.widget.TextView
+        android:id="@+id/startAddingTxt"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/leaguespartan_variablefont_wght"
+        android:text="Add Your First Item!"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <carbon.widget.ImageView
+        android:id="@+id/addListBtn"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_margin="20dp"
+        android:background="@color/colorPrimaryVariant"
+        android:padding="12dp"
+        android:src="@drawable/ic_plus"
+        app:carbon_cornerRadius="16dp"
+        app:carbon_elevation="10dp"
+        app:carbon_elevationShadowColor="@color/black"
+        app:carbon_rippleColor="@color/colorPrimaryVariant"
+        app:carbon_rippleHotspot="true"
+        app:carbon_rippleRadius="50dp"
+        app:carbon_rippleStyle="background"
+        app:carbon_tint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
