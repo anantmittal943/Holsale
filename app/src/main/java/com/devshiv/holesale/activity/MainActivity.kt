@@ -20,6 +20,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -42,6 +43,7 @@ import java.util.Locale
 import com.devshiv.holesale.model.ListModel
 import com.devshiv.holesale.adapter.MainAdapter
 import com.devshiv.holesale.R
+import com.devshiv.holesale.Utils
 import com.devshiv.holesale.model.UserModel
 import com.faltenreich.skeletonlayout.Skeleton
 import com.faltenreich.skeletonlayout.applySkeleton
@@ -51,7 +53,7 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
 import com.google.android.gms.location.SettingsClient
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
@@ -72,20 +74,18 @@ class MainActivity : AppCompatActivity() {
     private var isEditing = false
     private var docId: String = ""
     private var oldImageUrl: String = ""
-
-    //    private var showSkeleton: Boolean = true
     private val TAG = "xyz"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-        window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryVariant)
+
+        Utils.changeSystemBarsColor(
+            window, binding.root,
+            ContextCompat.getColor(this, R.color.colorPrimaryVariant),
+            ContextCompat.getColor(this, R.color.colorPrimaryVariant)
+        )
 
         val currentUser = firebaseAuth.currentUser
         if (currentUser != null) {
@@ -116,9 +116,20 @@ class MainActivity : AppCompatActivity() {
 
             binding.searchBtn.setOnClickListener {
                 binding.searchBox.visibility = View.VISIBLE
+                binding.searchBtn.visibility = View.GONE
+                binding.closeBtn.visibility = View.VISIBLE
                 binding.searchBox.requestFocus()
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(binding.searchBox, InputMethodManager.SHOW_IMPLICIT)
+            }
+            binding.closeBtn.setOnClickListener {
+                binding.searchBox.setText("")
+                binding.searchBox.visibility = View.GONE
+                binding.closeBtn.visibility = View.GONE
+                binding.searchBtn.visibility = View.VISIBLE
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(binding.searchBox.windowToken, 0)
+                getData()
             }
             binding.searchBox.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -130,7 +141,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             binding.searchBox.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     filterList(s.toString())
@@ -143,13 +160,16 @@ class MainActivity : AppCompatActivity() {
             val customLayout: View = layoutInflater.inflate(R.layout.list_item_layout, null)
             builder.setView(customLayout)
             val dialog = builder.create()
-            dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            dialog.window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
             dialog.window?.setBackgroundDrawableResource(R.drawable.custom_alert_dialog)
             val editBtn: ImageView = customLayout.findViewById(R.id.editBtn)
             val deleteBtn: ImageView = customLayout.findViewById(R.id.deleteBtn)
             val uploadImgTxt: TextView = customLayout.findViewById(R.id.uploadImageTxt)
-            val addPhoneNoTxt: TextView = customLayout.findViewById(R.id.addPhoneNoTxt)
-            val addAddressTxt: TextView = customLayout.findViewById(R.id.addAddressTxt)
+//            val addPhoneNoTxt: TextView = customLayout.findViewById(R.id.addPhoneNoTxt)
+//            val addAddressTxt: TextView = customLayout.findViewById(R.id.addAddressTxt)
             val addPhoneNoEdTxt: EditText = customLayout.findViewById(R.id.addPhoneNoEdTxt)
             addAddressEdTxt = customLayout.findViewById(R.id.addAddressEdTxt)
             uploadBtn = customLayout.findViewById(R.id.uploadBtn)
@@ -184,7 +204,8 @@ class MainActivity : AppCompatActivity() {
                     dialog.dismiss()
                 } else {
                     Log.e(TAG, "Either image not uploaded or phone is empty or address is empty")
-                    Toast.makeText(this, "Make sure to fill all details!!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Make sure to fill all details!!", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
             negativeBtn.setOnClickListener {
@@ -192,8 +213,8 @@ class MainActivity : AppCompatActivity() {
             }
             dialog.setOnDismissListener {
                 uploadImgTxt.setText("Upload Image")
-                addPhoneNoTxt.setText("Add Phone Number")
-                addAddressTxt.setText("Add Address")
+//                addPhoneNoTxt.setText("Add Phone Number")
+//                addAddressTxt.setText("Add Address")
                 editBtn.visibility = View.GONE
                 deleteBtn.visibility = View.GONE
                 addPhoneNoEdTxt.setText("")
@@ -238,8 +259,8 @@ class MainActivity : AppCompatActivity() {
                 updatedDateTxt.text = ListModel.formatDate(selectedItem.updatedAt)
                 updatedTimeTxt.text = ListModel.formatTime(selectedItem.updatedAt)
                 uploadImgTxt.setText("Image Uploaded")
-                addPhoneNoTxt.setText("Phone Number")
-                addAddressTxt.setText("Address")
+//                addPhoneNoTxt.setText("Phone Number")
+//                addAddressTxt.setText("Address")
                 editBtn.visibility = View.VISIBLE
                 deleteBtn.visibility = View.VISIBLE
                 positiveBtn.visibility = View.GONE
@@ -257,8 +278,8 @@ class MainActivity : AppCompatActivity() {
                 editBtn.setOnClickListener {
                     isEditing = true
                     uploadImgTxt.setText("Change Image")
-                    addPhoneNoTxt.setText("Change Phone Number")
-                    addAddressTxt.setText("Change Address")
+//                    addPhoneNoTxt.setText("Change Phone Number")
+//                    addAddressTxt.setText("Change Address")
                     uploadBtn.isClickable = true
 //                    uploadBtn.setImageResource(R.drawable.upload)
                     addPhoneNoEdTxt.isEnabled = true
@@ -317,6 +338,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun uploadImg(fileUri: Uri, phoneNo: String, address: String) {
+        binding.noDataImg.visibility = View.GONE
+        binding.startAddingTxt.visibility = View.GONE
+        binding.listRV.visibility = carbon.view.View.VISIBLE
         skeleton.showSkeleton()
         val uid = firebaseAuth.currentUser?.uid ?: return
         val fileRef = storage.reference.child("users/$uid/${System.currentTimeMillis()}.jpg")
@@ -335,6 +359,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 .addOnFailureListener {
                     Log.e(TAG, "Image upload failed", it)
+                    binding.noDataImg.visibility = View.VISIBLE
+                    binding.startAddingTxt.visibility = View.VISIBLE
+                    binding.listRV.visibility = carbon.view.View.GONE
                 }
         } else {
             updateData(oldImageUrl.toUri(), phoneNo, address, docId)
@@ -359,10 +386,16 @@ class MainActivity : AppCompatActivity() {
             .add(listModel)
             .addOnSuccessListener {
                 Toast.makeText(this, "Added successfully", Toast.LENGTH_SHORT).show()
+                binding.noDataImg.visibility = View.GONE
+                binding.startAddingTxt.visibility = View.GONE
+                binding.listRV.visibility = View.VISIBLE
                 Log.d(TAG, "Data saved")
             }
             .addOnFailureListener {
                 Log.e(TAG, "Failed to save data", it)
+                binding.noDataImg.visibility = View.VISIBLE
+                binding.startAddingTxt.visibility = View.VISIBLE
+                binding.listRV.visibility = carbon.view.View.GONE
             }
         getData()
     }
@@ -472,9 +505,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchCurrentAddress(onAddressFetched: (String) -> Unit) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             pendingAddressCallback = onAddressFetched
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), ADDRESS_LOCATION_PERMISSION_REQUEST_CODE)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                ADDRESS_LOCATION_PERMISSION_REQUEST_CODE
+            )
             Log.e(TAG, "fetchCurrentAddress: permission not granted or denied")
             return
         } else {
@@ -483,7 +524,8 @@ class MainActivity : AppCompatActivity() {
                 .addOnSuccessListener { location ->
                     if (location != null) {
                         val geocoder = Geocoder(this, Locale.getDefault())
-                        val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+                        val addresses =
+                            geocoder.getFromLocation(location.latitude, location.longitude, 1)
 
                         if (!addresses.isNullOrEmpty()) {
                             val address = addresses[0].getAddressLine(0)
@@ -495,7 +537,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     } else {
 //                        checkLocationEnabled()
-                        Toast.makeText(this, "Location is null!!", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(this, "Location is null!!", Toast.LENGTH_SHORT).show()
                         onAddressFetched("")
                         addAddressEdTxt.hint = "Add address manually"
                     }
@@ -510,8 +552,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+        deviceId: Int
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults, deviceId)
         if (requestCode == ADDRESS_LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 pendingAddressCallback?.let {
@@ -566,7 +613,8 @@ class MainActivity : AppCompatActivity() {
                     Log.e("LocationCheck", "Error showing dialog: ${sendEx.message}")
                 }
             } else {
-                Toast.makeText(this, "Location is required but not available", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Location is required but not available", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }

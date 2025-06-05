@@ -1,90 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
 <carbon.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_margin="10dp"
     android:animateLayoutChanges="true"
-    android:background="@color/background"
-    android:elevation="2dp"
-    app:carbon_cornerRadius="24dp"
+    android:background="@color/white"
+    app:carbon_cornerRadius="16dp"
+    app:carbon_elevation="6dp"
     app:carbon_rippleColor="@color/colorSecondary"
-    app:carbon_rippleStyle="background"
-    app:carbon_stroke="@color/colorSecondaryVariant"
-    app:carbon_strokeWidth="3dp">
+    app:carbon_rippleStyle="background">
 
-    <carbon.widget.TextView
-        android:id="@+id/phoneNoPreview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="8dp"
-        android:fontFamily="@font/leaguespartan_variablefont_wght"
-        android:text="phone number"
-        android:textColor="@color/colorPrimary"
-        android:textSize="26sp"
-        android:textStyle="bold" />
-
-    <carbon.widget.ImageView
-        android:id="@+id/previewImg"
-        android:layout_width="250dp"
+    <carbon.widget.FrameLayout
+        android:id="@+id/imageContainer"
+        android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:layout_below="@id/phoneNoPreview"
-        android:layout_centerHorizontal="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_image_not_found"
-        app:carbon_cornerRadius="14dp"
-        app:carbon_stroke="@color/colorSecondary"
-        app:carbon_strokeWidth="2dp" />
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/colorSecondaryVariant"
+        app:carbon_cornerRadius="12dp"
+        app:carbon_elevation="2dp">
 
-    <carbon.widget.TextView
-        android:id="@+id/addressPreview"
+        <carbon.widget.ImageView
+            android:id="@+id/previewImg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_image_not_found"
+            app:carbon_cornerRadius="12dp" />
+
+    </carbon.widget.FrameLayout>
+
+    <carbon.widget.LinearLayout
+        android:id="@+id/numberSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/previewImg"
-        android:layout_centerHorizontal="true"
+        android:layout_below="@id/imageContainer"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="4dp"
         android:layout_marginEnd="20dp"
-        android:ellipsize="end"
-        android:fontFamily="@font/leaguespartan_variablefont_wght"
-        android:maxLines="1"
-        android:text="address"
-        android:textColor="@color/colorPrimaryVariant"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        android:layout_marginBottom="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-    <carbon.widget.TextView
-        android:id="@+id/datePreview"
-        android:layout_width="wrap_content"
+        <carbon.widget.ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_phone"
+            app:carbon_tint="@color/colorPrimaryVariant" />
+
+        <carbon.widget.TextView
+            android:id="@+id/phoneNoPreview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:fontFamily="@font/overlockregular"
+            android:maxLines="2"
+            android:text="+91 000 000 0000"
+            android:textColor="@color/colorPrimaryVariant"
+            android:textSize="16sp" />
+
+    </carbon.widget.LinearLayout>
+
+    <carbon.widget.LinearLayout
+        android:id="@+id/addressSection"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/addressPreview"
-        android:layout_alignParentStart="true"
+        android:layout_below="@id/numberSection"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="8dp"
-        android:fontFamily="@font/leaguespartan_variablefont_wght"
-        android:maxLines="1"
-        android:text="date"
-        android:textColor="@color/carbon_blueGrey_700"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <carbon.widget.TextView
-        android:id="@+id/timePreview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/addressPreview"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="4dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="8dp"
-        android:fontFamily="@font/leaguespartan_variablefont_wght"
-        android:maxLines="1"
-        android:text="time"
-        android:textColor="@color/carbon_blueGrey_700"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:layout_marginBottom="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <carbon.widget.ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_location"
+            app:carbon_tint="@color/colorPrimaryVariant" />
+
+        <carbon.widget.TextView
+            android:id="@+id/addressPreview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/overlockregular"
+            android:text="Address"
+            android:textColor="@color/colorPrimaryVariant"
+            android:textSize="16sp" />
+
+    </carbon.widget.LinearLayout>
+
+    <carbon.widget.LinearLayout
+        android:id="@+id/dateTimeSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/addressSection"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal">
+
+        <!-- Date Section -->
+        <carbon.widget.LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <carbon.widget.ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_calendar"
+                app:carbon_tint="@color/black" />
+
+            <carbon.widget.TextView
+                android:id="@+id/datePreview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/overlockregular"
+                android:text="Date"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                tools:text="Dec 15, 2024" />
+
+        </carbon.widget.LinearLayout>
+
+        <!-- Time Section -->
+        <carbon.widget.LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical|end"
+            android:orientation="horizontal">
+
+            <carbon.widget.ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_clock"
+                app:carbon_tint="@color/black" />
+
+            <carbon.widget.TextView
+                android:id="@+id/timePreview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/overlockregular"
+                android:text="Time"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                tools:text="2:30 PM" />
+
+        </carbon.widget.LinearLayout>
+
+    </carbon.widget.LinearLayout>
 
 </carbon.widget.RelativeLayout>

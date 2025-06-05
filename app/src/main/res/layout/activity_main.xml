@@ -35,14 +35,16 @@
 
         <carbon.widget.EditText
             android:id="@+id/searchBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:layout_marginStart="24dp"
+            android:layout_marginVertical="6dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="60dp"
             android:background="@color/colorPrimaryVariant"
             android:elevation="3dp"
             android:fontFamily="@font/leaguespartan_variablefont_wght"
-            android:hint="Enter phone number"
+            android:hint="Search Phone Number"
             android:imeOptions="actionSearch"
             android:inputType="phone"
             android:maxLength="10"
@@ -51,7 +53,7 @@
             android:paddingVertical="4dp"
             android:textColor="@color/background"
             android:textColorHint="@color/background"
-            android:textSize="32sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="gone"
             app:carbon_cornerRadius="10dp"
@@ -75,13 +77,30 @@
             app:carbon_rippleStyle="over"
             app:carbon_tint="@color/background" />
 
+        <carbon.widget.ImageView
+            android:id="@+id/closeBtn"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:clickable="true"
+            android:contentDescription="close search by phone number"
+            android:focusable="true"
+            android:padding="10dp"
+            android:src="@drawable/ic_close"
+            android:visibility="gone"
+            app:carbon_cornerRadius="42dp"
+            app:carbon_rippleColor="@color/colorSecondaryVariant"
+            app:carbon_rippleStyle="over"
+            app:carbon_tint="@color/background" />
+
     </carbon.widget.RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listRV"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="4dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -106,6 +125,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
         android:text="Add Your First Item!"
+        android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
         android:visibility="gone"
@@ -122,7 +142,7 @@
         android:padding="12dp"
         android:src="@drawable/ic_plus"
         app:carbon_cornerRadius="16dp"
-        app:carbon_elevation="10dp"
+        app:carbon_elevation="6dp"
         app:carbon_elevationShadowColor="@color/black"
         app:carbon_rippleColor="@color/colorPrimaryVariant"
         app:carbon_rippleHotspot="true"
