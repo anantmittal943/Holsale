@@ -75,7 +75,7 @@ class SignInActivity : ComponentActivity() {
         lifecycleScope.launch {
             try {
                 val result = credentialManager.getCredential(
-                    context = baseContext,
+                    context = this@SignInActivity,
                     request = request
                 )
                 handleSignIn(result.credential)
