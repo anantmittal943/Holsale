@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
 
         val currentUser = firebaseAuth.currentUser
         if (currentUser != null) {
-            userModel = UserModel(
+            /*userModel = UserModel(
                 currentUser.uid,
                 currentUser.displayName,
                 currentUser.email,
@@ -110,7 +110,7 @@ class MainActivity : ComponentActivity() {
                 }
                 .addOnFailureListener {
                     Log.e(TAG, "Error checking user", it)
-                }
+                }*/
 
             binding.nameTxt.text = "Hi, ${currentUser.displayName}"
 
@@ -244,7 +244,10 @@ class MainActivity : ComponentActivity() {
                     addAddressEdTxt.setText(address)
                     Log.d(TAG, "address: $address")
                 }*/
-                dialog.show()
+//                dialog.show()
+                val intent = Intent(this, AddListActivity::class.java)
+                startActivity(intent)
+//                onPause()
             }
 
             mainAdapter = MainAdapter(listModel, this) { selectedItem ->
@@ -274,7 +277,7 @@ class MainActivity : ComponentActivity() {
                     .into(uploadBtn)
                 addPhoneNoEdTxt.setText(selectedItem.phoneNumber)
                 addAddressEdTxt.setText(selectedItem.address)
-                dialog.show()
+//                dialog.show()
                 editBtn.setOnClickListener {
                     isEditing = true
                     uploadImgTxt.setText("Change Image")
@@ -306,13 +309,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        skeleton.showSkeleton()
-    }
-
     override fun onResume() {
         super.onResume()
+        skeleton.showSkeleton()
         getData()
     }
 
@@ -618,7 +617,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 
     companion object {
         private const val IMAGE_PICKER_REQUEST_CODE = 1001

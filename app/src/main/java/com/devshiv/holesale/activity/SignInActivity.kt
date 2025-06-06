@@ -18,6 +18,7 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.lifecycleScope
 import com.devshiv.holesale.R
 import com.devshiv.holesale.Utils
+import com.devshiv.holesale.Utils.Companion.TAG
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
@@ -27,6 +28,8 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.devshiv.holesale.databinding.ActivitySignInBinding
+import com.devshiv.holesale.model.UserModel
+import com.google.firebase.firestore.ktx.firestore
 import kotlinx.coroutines.launch
 
 class SignInActivity : ComponentActivity() {
@@ -40,6 +43,9 @@ class SignInActivity : ComponentActivity() {
     private val credentialManager: CredentialManager by lazy {
         CredentialManager.create(baseContext)
     }
+    private val firestore = Firebase.firestore
+    private lateinit var userModel: UserModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,9 +53,7 @@ class SignInActivity : ComponentActivity() {
         setContentView(binding.root)
 
         Utils.changeSystemBarsColor(
-            window, binding.root,
-            ContextCompat.getColor(this, R.color.colorPrimaryVariant),
-            ContextCompat.getColor(this, R.color.colorPrimaryVariant)
+            window, binding.root, ContextCompat.getColor(this, R.color.colorPrimaryVariant), ContextCompat.getColor(this, R.color.colorPrimaryVariant)
         )
 
         binding.googleBtn.setOnClickListener {
@@ -64,19 +68,14 @@ class SignInActivity : ComponentActivity() {
     }
 
     private fun launchCredentialManager() {
-        val googleOption = GetGoogleIdOption.Builder()
-            .setServerClientId(getString(R.string.google_web_client_id))
-            .setFilterByAuthorizedAccounts(false)
-            .build()
-        val request = GetCredentialRequest.Builder()
-            .addCredentialOption(googleOption)
-            .build()
+        val googleOption =
+            GetGoogleIdOption.Builder().setServerClientId(getString(R.string.google_web_client_id)).setFilterByAuthorizedAccounts(false).build()
+        val request = GetCredentialRequest.Builder().addCredentialOption(googleOption).build()
 
         lifecycleScope.launch {
             try {
                 val result = credentialManager.getCredential(
-                    context = this@SignInActivity,
-                    request = request
+                    context = this@SignInActivity, request = request
                 )
                 handleSignIn(result.credential)
             } catch (e: GetCredentialException) {
@@ -96,29 +95,44 @@ class SignInActivity : ComponentActivity() {
 
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        firebaseAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    Log.d(Utils.TAG, "signInWithCredential:success")
-                    val user = firebaseAuth.currentUser
-                    val isNewUser = task.result.additionalUserInfo?.isNewUser == true
-                    updateUI(user, isNewUser)
-                } else {
-                    Log.w(Utils.TAG, "signInWithCredential:failure", task.exception)
-                    Toast.makeText(
-                        this,
-                        "Failed to sign you in, please try again!!!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                Log.d(Utils.TAG, "signInWithCredential:success")
+                val user = firebaseAuth.currentUser
+                val isNewUser = task.result.additionalUserInfo?.isNewUser == true
+                updateUI(user, isNewUser)
+            } else {
+                Log.w(Utils.TAG, "signInWithCredential:failure", task.exception)
+                Toast.makeText(
+                    this, "Failed to sign you in, please try again!!!", Toast.LENGTH_SHORT
+                ).show()
             }
+        }
     }
 
     private fun updateUI(currentUser: FirebaseUser?, isNewUser: Boolean = false) {
         if (currentUser != null) {
-            val message =
-                if (isNewUser) "Sign Up Successful!" else "Welcome Back ${currentUser.displayName}"
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            if (isNewUser) {
+                Toast.makeText(
+                    this, "Sign Up Successful!", Toast.LENGTH_SHORT
+                ).show()
+                userModel = UserModel(
+                    currentUser.uid,
+                    currentUser.displayName,
+                    currentUser.email,
+                    currentUser.phoneNumber,
+                    currentUser.photoUrl,
+                    currentUser.isEmailVerified
+                )
+                val docRef = firestore.collection("users").document(currentUser.uid)
+                docRef.set(userModel)
+                    .addOnSuccessListener { Log.d(TAG, "User saved") }
+                    .addOnFailureListener { Log.e(TAG, "Error saving user", it) }
+            } else {
+                Toast.makeText(
+                    this, "Welcome Back ${currentUser.displayName}", Toast.LENGTH_SHORT
+                ).show()
+            }
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
