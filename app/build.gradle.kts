@@ -41,7 +41,7 @@ android {
 
     secrets {
         propertiesFileName = "secrets.properties"
-        defaultPropertiesFileName = "local.properties"
+        defaultPropertiesFileName = "local.defaults.properties"
     }
 
 }
@@ -64,6 +64,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
+    implementation(libs.places)
+    implementation(libs.places.ktx)
 
     api(libs.carbon)
     implementation(libs.glide)

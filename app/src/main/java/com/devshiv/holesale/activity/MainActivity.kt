@@ -239,7 +239,7 @@ class MainActivity : ComponentActivity() {
 //                getData()
             }
             binding.addListBtn.setOnClickListener {
-                checkLocationEnabled()
+//                checkLocationEnabled()
                 /*fetchCurrentAddress { address ->
                     addAddressEdTxt.setText(address)
                     Log.d(TAG, "address: $address")
@@ -327,7 +327,7 @@ class MainActivity : ComponentActivity() {
         if (requestCode == REQUEST_LOCATION_CODE) {
             if (resultCode == RESULT_OK) {
                 fetchCurrentAddress { address ->
-                    addAddressEdTxt.setText(address)
+//                    addAddressEdTxt.setText(address)
                     Log.d(TAG, "address: $address")
                 }
             } else {
@@ -599,7 +599,7 @@ class MainActivity : ComponentActivity() {
 
         task.addOnSuccessListener {
             fetchCurrentAddress { address ->
-                addAddressEdTxt.setText(address)
+//                addAddressEdTxt.setText(address)
                 Log.d(TAG, "address: $address")
             }
         }

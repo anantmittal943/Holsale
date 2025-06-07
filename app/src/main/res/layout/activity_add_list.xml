@@ -12,8 +12,8 @@
     <carbon.widget.ImageView
         android:id="@+id/truck"
         android:layout_width="match_parent"
-        android:layout_marginTop="5dp"
         android:layout_height="100dp"
+        android:layout_marginTop="5dp"
         android:src="@drawable/truck"
         app:carbon_tint="@color/colorPrimaryVariant"
         app:layout_constraintTop_toBottomOf="@id/topTxt" />
@@ -23,11 +23,11 @@
         android:layout_width="42dp"
         android:layout_height="42dp"
         android:background="@color/colorPrimaryVariant"
+        android:clickable="true"
         android:elevation="1dp"
+        android:focusable="true"
         android:padding="8dp"
         android:src="@drawable/ic_left"
-        android:clickable="true"
-        android:focusable="true"
         app:carbon_cornerRadius="16dp"
         app:carbon_rippleColor="@color/colorSecondary"
         app:carbon_rippleStyle="background"
@@ -426,6 +426,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/negativeBtn" />
+
+    <!--<fragment
+        android:id="@+id/autocomplete_fragment"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/addressCard"
+        app:layout_constraintStart_toStartOf="@id/addressCard"
+        app:layout_constraintTop_toBottomOf="@id/addressCard" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

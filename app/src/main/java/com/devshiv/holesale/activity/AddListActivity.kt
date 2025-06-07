@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -19,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.devshiv.holesale.R
 import com.devshiv.holesale.Utils
 import com.devshiv.holesale.adapter.MainAdapter
+import com.devshiv.holesale.bottom_sheet.AddressBottomSheetFragment
 import com.devshiv.holesale.databinding.ActivityAddListBinding
 import com.devshiv.holesale.model.ListModel
 import com.devshiv.holesale.model.UserModel
@@ -30,6 +32,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
 import com.google.android.gms.location.SettingsClient
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -38,7 +41,7 @@ import com.google.firebase.storage.ktx.storage
 import java.util.Locale
 import kotlin.math.log
 
-class AddListActivity : ComponentActivity() {
+class AddListActivity : AppCompatActivity() {
 
     private val binding: ActivityAddListBinding by lazy {
         ActivityAddListBinding.inflate(layoutInflater)
@@ -48,6 +51,8 @@ class AddListActivity : ComponentActivity() {
     }
     private val firestore = Firebase.firestore
     private val storage = Firebase.storage("gs://holsale-61ea5.firebasestorage.app")
+
+    //    private lateinit var supportFragmentManager: SupportFrag
     private lateinit var skeleton: Skeleton
     private lateinit var userModel: UserModel
     private var listModel: MutableList<ListModel> = mutableListOf()
@@ -107,14 +112,21 @@ class AddListActivity : ComponentActivity() {
                     .show()
             }
         }
+//        binding.addAddressEdTxt.isEnabled = false
+        binding.addAddressEdTxt.setOnClickListener {
+            AddressBottomSheetFragment().show(
+                supportFragmentManager,
+                "AddressBottomSheet"
+            )
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        fetchCurrentAddress { address ->
+        /*fetchCurrentAddress { address ->
             binding.addAddressEdTxt.setText(address)
             Log.d(TAG, "address: $address")
-        }
+        }*/
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -132,10 +144,10 @@ class AddListActivity : ComponentActivity() {
         }
         if (requestCode == REQUEST_LOCATION_CODE) {
             if (resultCode == RESULT_OK) {
-                fetchCurrentAddress { address ->
+                /*fetchCurrentAddress { address ->
                     binding.addAddressEdTxt.setText(address)
                     Log.d(TAG, "address: $address")
-                }
+                }*/
             } else {
                 Toast.makeText(this, "Please turn on location services", Toast.LENGTH_SHORT).show()
             }
@@ -386,10 +398,10 @@ class AddListActivity : ComponentActivity() {
         val task = client.checkLocationSettings(builder.build())
 
         task.addOnSuccessListener {
-            fetchCurrentAddress { address ->
+            /*fetchCurrentAddress { address ->
                 binding.addAddressEdTxt.setText(address)
                 Log.d(TAG, "address: $address")
-            }
+            }*/
         }
 
         task.addOnFailureListener { exception ->

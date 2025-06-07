@@ -11,7 +11,7 @@ class Utils {
 
     companion object {
 
-        const val TAG : String = "MyTag"
+        const val TAG: String = "xyz"
 
         fun Window.transparentStatusBar() {
             setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true)
