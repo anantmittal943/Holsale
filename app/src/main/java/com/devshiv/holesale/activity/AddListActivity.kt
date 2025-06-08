@@ -1,6 +1,7 @@
 package com.devshiv.holesale.activity
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.devshiv.holesale.R
+import com.devshiv.holesale.TokenProvider
 import com.devshiv.holesale.Utils
 import com.devshiv.holesale.adapter.MainAdapter
 import com.devshiv.holesale.bottom_sheet.AddressBottomSheetFragment
@@ -32,7 +35,12 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
 import com.google.android.gms.location.SettingsClient
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -53,15 +61,16 @@ class AddListActivity : AppCompatActivity() {
     private val storage = Firebase.storage("gs://holsale-61ea5.firebasestorage.app")
 
     //    private lateinit var supportFragmentManager: SupportFrag
-    private lateinit var skeleton: Skeleton
-    private lateinit var userModel: UserModel
-    private var listModel: MutableList<ListModel> = mutableListOf()
-    private lateinit var mainAdapter: MainAdapter
+//    private lateinit var skeleton: Skeleton
+//    private lateinit var userModel: UserModel
+//    private var listModel: MutableList<ListModel> = mutableListOf()
+//    private lateinit var mainAdapter: MainAdapter
     private var uploadImageUrl: Uri? = null
     private var pendingAddressCallback: ((String) -> Unit)? = null
 
-    //    private lateinit var uploadBtn: ImageView
-//    private lateinit var `binding.addAddressEdTxt`: EditText
+//    private lateinit var uploadBtn: ImageView
+
+    //    private lateinit var addAddressEdTxt: EditText
     private var isEditing = false
     private var docId: String = ""
     private var oldImageUrl: String = ""
@@ -81,6 +90,7 @@ class AddListActivity : AppCompatActivity() {
             ContextCompat.getColor(this, R.color.colorPrimaryVariant),
             ContextCompat.getColor(this, R.color.colorPrimaryVariant)
         )
+        Places.setPlacesAppCheckTokenProvider(TokenProvider())
         binding.backBtn.setOnClickListener {
             onBackPressed()
         }
@@ -114,10 +124,14 @@ class AddListActivity : AppCompatActivity() {
         }
 //        binding.addAddressEdTxt.isEnabled = false
         binding.addAddressEdTxt.setOnClickListener {
-            AddressBottomSheetFragment().show(
+            /*AddressBottomSheetFragment().show(
                 supportFragmentManager,
                 "AddressBottomSheet"
-            )
+            )*/
+            val fields = listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG)
+            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                .build(this@AddListActivity)
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
         }
     }
 
@@ -150,6 +164,25 @@ class AddListActivity : AppCompatActivity() {
                 }*/
             } else {
                 Toast.makeText(this, "Please turn on location services", Toast.LENGTH_SHORT).show()
+            }
+        }
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    data?.let {
+                        val place = Autocomplete.getPlaceFromIntent(it)
+                        binding.addAddressEdTxt.setText(place.address)
+                    }
+                }
+
+                AutocompleteActivity.RESULT_ERROR -> {
+                    val status = Autocomplete.getStatusFromIntent(data!!)
+                    Toast.makeText(this, "Error: ${status.statusMessage}", Toast.LENGTH_SHORT).show()
+                }
+
+                Activity.RESULT_CANCELED -> {
+                    // No action
+                }
             }
         }
     }
@@ -216,6 +249,7 @@ class AddListActivity : AppCompatActivity() {
 //                binding.listRV.visibility = carbon.view.View.GONE
             }
 //        getData()
+//        onBackPressed()
     }
 
     private fun deleteData(item: ListModel) {
@@ -422,5 +456,6 @@ class AddListActivity : AppCompatActivity() {
         private const val IMAGE_PICKER_REQUEST_CODE = 1001
         private const val ADDRESS_LOCATION_PERMISSION_REQUEST_CODE = 1010
         private const val REQUEST_LOCATION_CODE = 101
+        private const val AUTOCOMPLETE_REQUEST_CODE = 9981
     }
 }

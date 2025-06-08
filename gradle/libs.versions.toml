@@ -9,7 +9,7 @@ coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-appcompat = "1.7.0"
+appcompat = "1.7.1"
 material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
@@ -26,6 +26,7 @@ playServicesLocation = "21.3.0"
 playServicesMaps = "19.2.0"
 skeletonlayout = "6.0.0"
 ucrop = "2.2.10"
+firebaseAppcheckPlayintegrity = "18.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -52,6 +53,7 @@ play-services-location = { module = "com.google.android.gms:play-services-locati
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 skeletonlayout = { module = "com.faltenreich:skeletonlayout", version.ref = "skeletonlayout" }
 ucrop = { module = "com.github.yalantis:ucrop", version.ref = "ucrop" }
+firebase-appcheck-playintegrity = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity", version.ref = "firebaseAppcheckPlayintegrity" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
