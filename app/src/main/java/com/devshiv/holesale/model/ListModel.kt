@@ -1,6 +1,7 @@
 package com.devshiv.holesale.model
 
 import android.util.Log
+import java.io.Serializable
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -12,7 +13,7 @@ data class ListModel(
     val address: String? = "",
     val createdAt: String,
     val updatedAt: String
-) {
+) : Serializable {
     constructor() : this("", "", "", "", "", "")
     companion object {
         val TAG = "xyz"

@@ -22,6 +22,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -63,6 +65,7 @@ class MainActivity : ComponentActivity() {
     }
     private val firestore = Firebase.firestore
     private val storage = Firebase.storage("gs://holsale-61ea5.firebasestorage.app")
+    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var skeleton: Skeleton
     private lateinit var userModel: UserModel
     private var listModel: MutableList<ListModel> = mutableListOf()
@@ -89,28 +92,6 @@ class MainActivity : ComponentActivity() {
 
         val currentUser = firebaseAuth.currentUser
         if (currentUser != null) {
-            /*userModel = UserModel(
-                currentUser.uid,
-                currentUser.displayName,
-                currentUser.email,
-                currentUser.phoneNumber,
-                currentUser.photoUrl,
-                currentUser.isEmailVerified
-            )
-            val docRef = firestore.collection("users").document(currentUser.uid)
-            docRef.get()
-                .addOnSuccessListener { document ->
-                    if (!document.exists()) {
-                        docRef.set(userModel)
-                            .addOnSuccessListener { Log.d(TAG, "User saved") }
-                            .addOnFailureListener { Log.e(TAG, "Error saving user", it) }
-                    } else {
-                        Log.d(TAG, "User already exists, not saving again.")
-                    }
-                }
-                .addOnFailureListener {
-                    Log.e(TAG, "Error checking user", it)
-                }*/
 
             binding.nameTxt.text = "Hi, ${currentUser.displayName}"
 
@@ -156,88 +137,31 @@ class MainActivity : ComponentActivity() {
                 override fun afterTextChanged(s: Editable?) {}
             })
 
-            val builder = AlertDialog.Builder(this)
-            val customLayout: View = layoutInflater.inflate(R.layout.list_item_layout, null)
-            builder.setView(customLayout)
-            val dialog = builder.create()
-            dialog.window?.setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            dialog.window?.setBackgroundDrawableResource(R.drawable.custom_alert_dialog)
-            val editBtn: ImageView = customLayout.findViewById(R.id.editBtn)
-            val deleteBtn: ImageView = customLayout.findViewById(R.id.deleteBtn)
-            val uploadImgTxt: TextView = customLayout.findViewById(R.id.uploadImageTxt)
-//            val addPhoneNoTxt: TextView = customLayout.findViewById(R.id.addPhoneNoTxt)
-//            val addAddressTxt: TextView = customLayout.findViewById(R.id.addAddressTxt)
-            val addPhoneNoEdTxt: EditText = customLayout.findViewById(R.id.addPhoneNoEdTxt)
-            addAddressEdTxt = customLayout.findViewById(R.id.addAddressEdTxt)
-            uploadBtn = customLayout.findViewById(R.id.uploadBtn)
-            val positiveBtn: Button = customLayout.findViewById(R.id.positiveBtn)
-            val negativeBtn: Button = customLayout.findViewById(R.id.negativeBtn)
-            val createdAtTxt: TextView = customLayout.findViewById(R.id.createdAtTxt)
-            val updatedAtTxt: TextView = customLayout.findViewById(R.id.updatedAtTxt)
-            val createdDateTxt: TextView = customLayout.findViewById(R.id.createdDateTxt)
-            val createdTimeTxt: TextView = customLayout.findViewById(R.id.createdTimeTxt)
-            val updatedDateTxt: TextView = customLayout.findViewById(R.id.updatedDateTxt)
-            val updatedTimeTxt: TextView = customLayout.findViewById(R.id.updatedTimeTxt)
-            uploadBtn.setOnClickListener {
-                ImagePicker.with(this)
-                    .galleryMimeTypes(
-                        mimeTypes = arrayOf(
-                            "image/png",
-                            "image/jpg",
-                            "image/jpeg"
-                        )
-                    )
-                    .crop()
-                    .compress(1024)
-                    .maxResultSize(1080, 1080)
-                    .start(IMAGE_PICKER_REQUEST_CODE)
+            mainAdapter = MainAdapter(listModel, this) { selectedItem ->
+                val intent = Intent(this, AddListActivity::class.java)
+                intent.putExtra("selectedItem", selectedItem)
+                startActivity(intent)
             }
-            positiveBtn.setOnClickListener {
-                val phoneNo = addPhoneNoEdTxt.text.toString()
-                val address = addAddressEdTxt.text.toString()
-                if (uploadImageUrl != null && phoneNo.isNotEmpty() && address.isNotEmpty()) {
-                    Log.d(TAG, "onCreate: $uploadImageUrl")
-                    uploadImg(uploadImageUrl!!, phoneNo, address)
-                    dialog.dismiss()
-                } else {
-                    Log.e(TAG, "Either image not uploaded or phone is empty or address is empty")
-                    Toast.makeText(this, "Make sure to fill all details!!", Toast.LENGTH_SHORT)
-                        .show()
+
+            val layoutManager = LinearLayoutManager(this)
+            binding.listRV.layoutManager = layoutManager
+            binding.listRV.adapter = mainAdapter
+            skeleton = binding.listRV.applySkeleton(R.layout.main_item_layout)
+            skeleton.maskColor = ContextCompat.getColor(this, carbon.R.color.carbon_blueGrey_200)
+            skeleton.shimmerColor = ContextCompat.getColor(this, R.color.colorSecondary)
+            skeleton.showShimmer = true
+
+            /*activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == RESULT_OK) {
+//                    getData()
+                    val action = result.data?.getStringExtra("action")
+                    when (action) {
+                        "refresh" -> getData()
+                        "show_loading" -> skeleton.showSkeleton()
+                    }
                 }
-            }
-            negativeBtn.setOnClickListener {
-                dialog.dismiss()
-            }
-            dialog.setOnDismissListener {
-                uploadImgTxt.setText("Upload Image")
-//                addPhoneNoTxt.setText("Add Phone Number")
-//                addAddressTxt.setText("Add Address")
-                editBtn.visibility = View.GONE
-                deleteBtn.visibility = View.GONE
-                addPhoneNoEdTxt.setText("")
-                addPhoneNoEdTxt.clearFocus()
-                addPhoneNoEdTxt.isEnabled = true
-                addAddressEdTxt.setText("")
-                addAddressEdTxt.clearFocus()
-                addAddressEdTxt.isEnabled = true
-                uploadBtn.setImageResource(R.drawable.upload)
-                uploadBtn.isClickable = true
-                positiveBtn.setText("Add")
-                positiveBtn.visibility = View.VISIBLE
-                negativeBtn.setText("Cancel")
-//                binding.searchBox.setText("")
-//                binding.searchBox.visibility = View.GONE
-                createdAtTxt.visibility = View.GONE
-                createdDateTxt.visibility = View.GONE
-                createdTimeTxt.visibility = View.GONE
-                updatedAtTxt.visibility = View.GONE
-                updatedDateTxt.visibility = View.GONE
-                updatedTimeTxt.visibility = View.GONE
-//                getData()
-            }
+            }*/
+
             binding.addListBtn.setOnClickListener {
 //                checkLocationEnabled()
                 /*fetchCurrentAddress { address ->
@@ -246,71 +170,16 @@ class MainActivity : ComponentActivity() {
                 }*/
 //                dialog.show()
                 val intent = Intent(this, AddListActivity::class.java)
-                startActivity(intent)
+//                activityResultLauncher.launch(intent)
+                startActivityForResult(intent, ADD_LIST_REQUEST_CODE)
 //                onPause()
             }
-
-            mainAdapter = MainAdapter(listModel, this) { selectedItem ->
-                createdAtTxt.visibility = View.VISIBLE
-                createdDateTxt.visibility = View.VISIBLE
-                createdTimeTxt.visibility = View.VISIBLE
-                updatedAtTxt.visibility = View.VISIBLE
-                updatedDateTxt.visibility = View.VISIBLE
-                updatedTimeTxt.visibility = View.VISIBLE
-                createdDateTxt.text = ListModel.formatDate(selectedItem.createdAt)
-                createdTimeTxt.text = ListModel.formatTime(selectedItem.createdAt)
-                updatedDateTxt.text = ListModel.formatDate(selectedItem.updatedAt)
-                updatedTimeTxt.text = ListModel.formatTime(selectedItem.updatedAt)
-                uploadImgTxt.setText("Image Uploaded")
-//                addPhoneNoTxt.setText("Phone Number")
-//                addAddressTxt.setText("Address")
-                editBtn.visibility = View.VISIBLE
-                deleteBtn.visibility = View.VISIBLE
-                positiveBtn.visibility = View.GONE
-                negativeBtn.setText("Close")
-                uploadBtn.isClickable = false
-                addPhoneNoEdTxt.isEnabled = false
-                addAddressEdTxt.isEnabled = false
-                Glide.with(this)
-                    .load(selectedItem.imageUrl)
-                    .placeholder(R.drawable.ic_image_not_found)
-                    .into(uploadBtn)
-                addPhoneNoEdTxt.setText(selectedItem.phoneNumber)
-                addAddressEdTxt.setText(selectedItem.address)
-//                dialog.show()
-                editBtn.setOnClickListener {
-                    isEditing = true
-                    uploadImgTxt.setText("Change Image")
-//                    addPhoneNoTxt.setText("Change Phone Number")
-//                    addAddressTxt.setText("Change Address")
-                    uploadBtn.isClickable = true
-//                    uploadBtn.setImageResource(R.drawable.upload)
-                    addPhoneNoEdTxt.isEnabled = true
-                    addAddressEdTxt.isEnabled = true
-                    positiveBtn.setText("Update")
-                    positiveBtn.visibility = View.VISIBLE
-                    negativeBtn.setText("Cancel")
-                    docId = selectedItem.id!!
-                    uploadImageUrl = selectedItem.imageUrl?.toUri()
-                    oldImageUrl = selectedItem.imageUrl!!
-                }
-                deleteBtn.setOnClickListener {
-                    deleteData(selectedItem)
-                    dialog.dismiss()
-                }
-            }
-            val layoutManager = LinearLayoutManager(this)
-            binding.listRV.layoutManager = layoutManager
-            binding.listRV.adapter = mainAdapter
-            skeleton = binding.listRV.applySkeleton(R.layout.main_item_layout)
-            skeleton.maskColor = ContextCompat.getColor(this, carbon.R.color.carbon_blueGrey_200)
-            skeleton.shimmerColor = ContextCompat.getColor(this, R.color.colorSecondary)
-            skeleton.showShimmer = true
         }
     }
 
     override fun onResume() {
         super.onResume()
+        Log.d(TAG, "onResume: ")
         skeleton.showSkeleton()
         getData()
     }
@@ -332,6 +201,17 @@ class MainActivity : ComponentActivity() {
                 }
             } else {
                 Toast.makeText(this, "Please turn on location services", Toast.LENGTH_SHORT).show()
+            }
+        }
+        if (requestCode == ADD_LIST_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                val action = data?.getStringExtra("action")
+                when (action) {
+                    "refresh" -> getData()
+                    "show_loading" -> skeleton.showSkeleton()
+                }
+            } else {
+                getData()
             }
         }
     }
@@ -622,6 +502,7 @@ class MainActivity : ComponentActivity() {
         private const val IMAGE_PICKER_REQUEST_CODE = 1001
         private const val ADDRESS_LOCATION_PERMISSION_REQUEST_CODE = 1010
         private const val REQUEST_LOCATION_CODE = 101
+        private const val ADD_LIST_REQUEST_CODE = 9981
     }
 
 }

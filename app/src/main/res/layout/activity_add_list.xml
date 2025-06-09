@@ -18,24 +18,6 @@
         app:carbon_tint="@color/colorPrimaryVariant"
         app:layout_constraintTop_toBottomOf="@id/topTxt" />
 
-    <carbon.widget.ImageView
-        android:id="@+id/backBtn"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:background="@color/colorPrimaryVariant"
-        android:clickable="true"
-        android:elevation="1dp"
-        android:focusable="true"
-        android:padding="8dp"
-        android:src="@drawable/ic_left"
-        app:carbon_cornerRadius="16dp"
-        app:carbon_rippleColor="@color/colorSecondary"
-        app:carbon_rippleStyle="background"
-        app:carbon_tint="@color/background"
-        app:layout_constraintBottom_toBottomOf="@id/topTxt"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/topTxt" />
-
     <carbon.widget.TextView
         android:id="@+id/topTxt"
         android:layout_width="match_parent"
@@ -58,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
-        android:text="Take  a photo of your list or upload an existing list one. We'll process it and get back to you with a quote."
+        android:text="@string/suggestionTxt_add"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -66,16 +48,30 @@
         app:layout_constraintTop_toBottomOf="@id/truck" />
 
     <carbon.widget.ImageView
+        android:id="@+id/backBtn"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:background="@color/colorPrimaryVariant"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="8dp"
+        android:src="@drawable/ic_left"
+        app:carbon_cornerRadius="16dp"
+        app:carbon_rippleColor="@color/colorSecondary"
+        app:carbon_rippleStyle="background"
+        app:carbon_tint="@color/background"
+        app:layout_constraintBottom_toBottomOf="@id/topTxt"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/topTxt" />
+
+    <carbon.widget.ImageView
         android:id="@+id/editBtn"
         android:layout_width="38dp"
         android:layout_height="38dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="25dp"
         android:layout_marginEnd="10dp"
-        android:background="@color/background"
+        android:background="@color/colorPrimaryVariant"
         android:clickable="true"
         android:contentDescription="edit button"
-        android:elevation="2dp"
         android:focusable="true"
         android:padding="10dp"
         android:src="@drawable/ic_edit"
@@ -83,20 +79,19 @@
         app:carbon_cornerRadius="16dp"
         app:carbon_rippleColor="@color/colorSecondary"
         app:carbon_rippleStyle="background"
-        app:carbon_tint="@color/colorPrimaryVariant"
+        app:carbon_tint="@color/background"
+        app:layout_constraintBottom_toBottomOf="@id/deleteBtn"
         app:layout_constraintEnd_toStartOf="@id/deleteBtn"
-        app:layout_constraintStart_toStartOf="@id/uploadCard"
-        app:layout_constraintTop_toBottomOf="@id/suggestionTxt" />
+        app:layout_constraintTop_toTopOf="@id/deleteBtn" />
 
     <carbon.widget.ImageView
         android:id="@+id/deleteBtn"
         android:layout_width="38dp"
         android:layout_height="38dp"
-        android:layout_marginEnd="50dp"
-        android:background="@color/background"
+        android:layout_marginEnd="6dp"
+        android:background="@color/colorPrimaryVariant"
         android:clickable="true"
         android:contentDescription="delete button"
-        android:elevation="2dp"
         android:focusable="true"
         android:padding="10dp"
         android:src="@drawable/ic_delete"
@@ -104,10 +99,10 @@
         app:carbon_cornerRadius="16dp"
         app:carbon_rippleColor="@color/colorSecondary"
         app:carbon_rippleStyle="background"
-        app:carbon_tint="@color/colorPrimaryVariant"
-        app:layout_constraintEnd_toEndOf="@id/uploadCard"
-        app:layout_constraintStart_toEndOf="@id/editBtn"
-        app:layout_constraintTop_toTopOf="@id/editBtn" />
+        app:carbon_tint="@color/background"
+        app:layout_constraintBottom_toBottomOf="@id/topTxt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/topTxt" />
 
     <carbon.widget.RelativeLayout
         android:id="@+id/uploadCard"
@@ -123,7 +118,7 @@
         app:carbon_cornerRadius="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editBtn">
+        app:layout_constraintTop_toBottomOf="@id/suggestionTxt">
 
         <carbon.widget.ImageView
             android:id="@+id/imagePreview"
@@ -268,14 +263,17 @@
             app:carbon_cornerRadius="8dp"
             app:carbon_tint="@color/colorPrimaryVariant" />
 
-        <carbon.widget.EditText
+        <carbon.widget.TextView
             android:id="@+id/addAddressEdTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/locationIcon"
             android:layout_weight="1"
             android:background="@color/backgroundLight"
+            android:clickable="true"
+            android:focusable="true"
             android:fontFamily="@font/leaguespartan_variablefont_wght"
+            android:gravity="center_vertical"
             android:hint="Search for address"
             android:inputType="textMultiLine"
             android:minLines="2"
@@ -285,7 +283,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:carbon_cornerRadius="14dp"
-            app:carbon_rippleColor="@color/background"
+            app:carbon_rippleColor="@color/colorSecondaryVariant"
             app:carbon_rippleStyle="background" />
 
     </carbon.widget.LinearLayout>
@@ -295,14 +293,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginBottom="22dp"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
-        android:text="Created At"
+        android:text="Created At :"
         android:textAlignment="viewStart"
         android:textColor="@color/colorPrimaryVariant"
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/addressCard" />
 
@@ -310,23 +309,23 @@
         android:id="@+id/updatedAtTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginTop="6dp"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
-        android:text="Updated At"
+        android:text="Updated At :"
         android:textAlignment="viewEnd"
         android:textColor="@color/colorPrimaryVariant"
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/addressCard" />
+        app:layout_constraintStart_toStartOf="@id/createdAtTxt"
+        app:layout_constraintTop_toBottomOf="@id/createdAtTxt" />
 
     <carbon.widget.TextView
         android:id="@+id/createdDateTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
+        android:layout_marginEnd="24dp"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
         android:maxLines="1"
         android:text="date"
@@ -334,15 +333,27 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/createdAtTxt"
-        app:layout_constraintStart_toStartOf="@id/createdAtTxt"
-        app:layout_constraintTop_toBottomOf="@id/createdAtTxt" />
+        app:layout_constraintEnd_toStartOf="@id/createdTimeTxt"
+        app:layout_constraintTop_toTopOf="@id/createdAtTxt" />
+
+    <carbon.widget.FrameLayout
+        android:id="@+id/fl1"
+        android:layout_width="2dp"
+        android:layout_height="20dp"
+        android:background="@color/carbon_blueGrey_200"
+        android:visibility="gone"
+        app:carbon_cornerRadius="2dp"
+        app:layout_constraintBottom_toBottomOf="@id/createdDateTxt"
+        app:layout_constraintEnd_toStartOf="@id/createdTimeTxt"
+        app:layout_constraintStart_toEndOf="@id/createdDateTxt"
+        app:layout_constraintTop_toTopOf="@id/createdDateTxt" />
 
     <carbon.widget.TextView
         android:id="@+id/createdTimeTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
+        android:layout_marginEnd="30dp"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
         android:maxLines="1"
         android:text="time"
@@ -350,15 +361,13 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/createdAtTxt"
-        app:layout_constraintStart_toStartOf="@id/createdAtTxt"
-        app:layout_constraintTop_toBottomOf="@id/createdDateTxt" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/createdAtTxt" />
 
     <carbon.widget.TextView
         android:id="@+id/updatedDateTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
         android:maxLines="1"
         android:text="date"
@@ -366,15 +375,26 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/updatedAtTxt"
-        app:layout_constraintStart_toStartOf="@id/updatedAtTxt"
-        app:layout_constraintTop_toBottomOf="@id/updatedAtTxt" />
+        app:layout_constraintEnd_toEndOf="@id/createdDateTxt"
+        app:layout_constraintStart_toStartOf="@id/createdDateTxt"
+        app:layout_constraintTop_toTopOf="@id/updatedAtTxt" />
+
+    <carbon.widget.FrameLayout
+        android:id="@+id/fl2"
+        android:layout_width="2dp"
+        android:layout_height="20dp"
+        android:background="@color/carbon_blueGrey_200"
+        android:visibility="gone"
+        app:carbon_cornerRadius="2dp"
+        app:layout_constraintBottom_toBottomOf="@id/updatedDateTxt"
+        app:layout_constraintEnd_toStartOf="@id/updatedTimeTxt"
+        app:layout_constraintStart_toEndOf="@id/updatedDateTxt"
+        app:layout_constraintTop_toTopOf="@id/updatedDateTxt" />
 
     <carbon.widget.TextView
         android:id="@+id/updatedTimeTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
         android:fontFamily="@font/leaguespartan_variablefont_wght"
         android:maxLines="1"
         android:text="time"
@@ -382,15 +402,15 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/updatedAtTxt"
-        app:layout_constraintStart_toStartOf="@id/updatedAtTxt"
-        app:layout_constraintTop_toBottomOf="@id/updatedDateTxt" />
+        app:layout_constraintEnd_toEndOf="@id/createdTimeTxt"
+        app:layout_constraintStart_toStartOf="@id/createdTimeTxt"
+        app:layout_constraintTop_toTopOf="@id/updatedAtTxt" />
 
     <carbon.widget.Button
         android:id="@+id/negativeBtn"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="24dp"
         android:background="@color/background"
         android:elevation="4dp"
         android:fontFamily="@font/overlockregular"
@@ -412,7 +432,6 @@
         android:id="@+id/positiveBtn"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:background="@color/colorPrimaryVariant"
         android:elevation="4dp"
         android:fontFamily="@font/overlockregular"
@@ -425,7 +444,8 @@
         app:carbon_rippleStyle="background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/negativeBtn" />
+        app:layout_constraintStart_toEndOf="@id/negativeBtn"
+        app:layout_constraintTop_toBottomOf="@id/addressCard" />
 
     <!--<fragment
         android:id="@+id/autocomplete_fragment"

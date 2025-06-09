@@ -2,4 +2,7 @@
     <string name="app_name">Holsale</string>
     <string name="google_web_client_id">1002488127155-k406dfor3ajpvk29d4perg4u5rupr619.apps.googleusercontent.com</string>
     <string name="google_maps_api_key">AIzaSyDUTai8uolgINqUPmrrXVHCb2WdmsBh85A</string>
+    <string name="suggestionTxt_add">Take a photo of your list or upload an existing list one. We\'ll process it and get back to you with a quote.</string>
+    <string name="suggestionTxt_preview">Take a look at your uploaded details. Make sure everything looks good before proceeding.</string>
+    <string name="suggestionTxt_edit">Update your details below. You can edit photo of your list, phone number, or address before saving.</string>
 </resources>
