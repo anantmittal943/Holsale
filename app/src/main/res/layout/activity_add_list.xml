@@ -11,6 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:animateLayoutChanges="true"
         android:layout_height="wrap_content"
         android:paddingBottom="20dp">
 
@@ -245,7 +246,7 @@
         <carbon.widget.LinearLayout
             android:id="@+id/addressCard"
             android:layout_width="match_parent"
-            android:layout_height="54dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="20dp"
@@ -291,6 +292,93 @@
                 app:carbon_cornerRadius="14dp"
                 app:carbon_rippleColor="@color/colorSecondaryVariant"
                 app:carbon_rippleStyle="background" />
+
+        </carbon.widget.LinearLayout>
+
+        <carbon.widget.LinearLayout
+            android:id="@+id/addressOptionLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:animateLayoutChanges="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/addressCard">
+
+            <carbon.widget.LinearLayout
+                android:id="@+id/useCurrentLocationBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@color/backgroundLight"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                app:carbon_cornerRadius="12dp"
+                app:carbon_rippleColor="@color/colorPrimaryVariant"
+                app:carbon_rippleStyle="background"
+                app:carbon_stroke="@color/carbon_blueGrey_200"
+                app:carbon_strokeWidth="1dp">
+
+                <carbon.widget.ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/ic_crosshair"
+                    app:carbon_tint="@color/colorPrimaryVariant" />
+
+                <carbon.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/overlockregular"
+                    android:gravity="center"
+                    android:text="Use Current Location"
+                    android:textColor="@color/colorPrimaryVariant"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </carbon.widget.LinearLayout>
+
+            <carbon.widget.LinearLayout
+                android:id="@+id/searchOnMapBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/backgroundLight"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                app:carbon_cornerRadius="12dp"
+                app:carbon_rippleColor="@color/colorPrimaryVariant"
+                app:carbon_rippleStyle="background"
+                app:carbon_stroke="@color/carbon_blueGrey_200"
+                app:carbon_strokeWidth="1dp">
+
+                <carbon.widget.ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/ic_search"
+                    app:carbon_tint="@color/colorPrimaryVariant" />
+
+                <carbon.widget.TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/overlockregular"
+                    android:gravity="center"
+                    android:text="Search on Map"
+                    android:textColor="@color/colorPrimaryVariant"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </carbon.widget.LinearLayout>
 
         </carbon.widget.LinearLayout>
 
@@ -446,23 +534,15 @@
             android:textColor="@color/background"
             android:textSize="14sp"
             android:textStyle="bold"
+            android:visibility="visible"
             app:carbon_cornerRadius="16dp"
             app:carbon_rippleColor="@color/colorSecondary"
             app:carbon_rippleStyle="background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/negativeBtn"
-            app:layout_constraintTop_toBottomOf="@id/addressCard" />
+            app:layout_constraintTop_toBottomOf="@id/addressOptionLayout" />
 
-        <!--<fragment
-            android:id="@+id/autocomplete_fragment"
-            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-            android:layout_width="match_parent"
-            android:visibility="gone"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@id/addressCard"
-            app:layout_constraintStart_toStartOf="@id/addressCard"
-            app:layout_constraintTop_toBottomOf="@id/addressCard" />-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

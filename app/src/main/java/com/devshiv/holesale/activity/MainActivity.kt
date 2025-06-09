@@ -261,6 +261,8 @@ class MainActivity : ComponentActivity() {
         if (binding.searchBox.isVisible) {
             binding.searchBox.setText("")
             binding.searchBox.visibility = View.GONE
+            binding.closeBtn.visibility = View.GONE
+            binding.searchBtn.visibility = View.VISIBLE
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(binding.searchBox.windowToken, 0)
             getData()

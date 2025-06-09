@@ -120,16 +120,48 @@ class AddListActivity : AppCompatActivity() {
             }
         }
 
-        binding.addAddressEdTxt.setOnClickListener {
-            /*AddressBottomSheetFragment().show(
+        /*binding.addAddressEdTxt.setOnClickListener {
+            *//*AddressBottomSheetFragment().show(
                 supportFragmentManager,
                 "AddressBottomSheet"
-            )*/
+            )*//*
             binding.addPhoneNoEdTxt.clearFocus()
             val fields = listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG)
             val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
                 .build(this@AddListActivity)
             startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+        }*/
+
+        var isOptionsVisible = false
+        binding.addAddressEdTxt.setOnClickListener {
+            if (isOptionsVisible) {
+                binding.addressOptionLayout.visibility = View.GONE
+            } else {
+                binding.addressOptionLayout.visibility = View.VISIBLE
+                binding.addressOptionLayout.alpha = 0f
+                binding.addressOptionLayout.translationY = -20f
+                binding.addressOptionLayout.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setDuration(300)
+                    .withEndAction {
+                        binding.main.post {
+                            binding.main.smoothScrollTo(0, binding.main.bottom)
+                        }
+                    }
+                    .start()
+                binding.useCurrentLocationBtn.setOnClickListener {
+                    fetchCurrentAddress()
+                }
+                binding.searchOnMapBtn.setOnClickListener {
+                    val fields = listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG)
+                    val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                        .build(this@AddListActivity)
+                    startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+                }
+            }
+            binding.addPhoneNoEdTxt.clearFocus()
+            isOptionsVisible = !isOptionsVisible
         }
 
         if (selectedItem != null) {
@@ -237,7 +269,7 @@ class AddListActivity : AppCompatActivity() {
                 Activity.RESULT_OK -> {
                     data?.let {
                         val place = Autocomplete.getPlaceFromIntent(it)
-                        binding.addAddressEdTxt.setText(place.address)
+                        binding.addAddressEdTxt.text = place.address
                     }
                 }
 
@@ -377,12 +409,56 @@ class AddListActivity : AppCompatActivity() {
             }
     }
 
+    private fun fetchCurrentAddress() {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_LOCATION_CODE
+            )
+            return
+        }
+
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location ->
+                if (location != null) {
+                    val geocoder = Geocoder(this, Locale.getDefault())
+                    val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+                    if (!addresses.isNullOrEmpty()) {
+                        val address = addresses[0].getAddressLine(0)
+                        binding.addAddressEdTxt.text = address
+                    } else {
+                        Toast.makeText(this, "Could not fetch address", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Location is null", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to get location", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_LOCATION_CODE) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                fetchCurrentAddress()
+            } else {
+                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     override fun onBackPressed() {
 //        super.onBackPressed()
         finish()
     }
 
     companion object {
+        private const val REQUEST_LOCATION_CODE = 2001
         private const val IMAGE_PICKER_REQUEST_CODE = 1001
         private const val AUTOCOMPLETE_REQUEST_CODE = 9981
     }
