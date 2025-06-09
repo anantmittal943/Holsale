@@ -164,31 +164,15 @@ class MainActivity : ComponentActivity() {
 
             binding.addListBtn.setOnClickListener {
                 checkLocationEnabled()
-                /*fetchCurrentAddress { address ->
-                    addAddressEdTxt.setText(address)
-                    Log.d(TAG, "address: $address")
-                }*/
-//                dialog.show()
-//                val intent = Intent(this, AddListActivity::class.java)
-//                activityResultLauncher.launch(intent)
-//                startActivityForResult(intent, ADD_LIST_REQUEST_CODE)
-//                onPause()
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "onStart: ")
-        skeleton.showSkeleton()
-        getData()
     }
 
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume: ")
-//        skeleton.showSkeleton()
-//        getData()
+        skeleton.showSkeleton()
+        getData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -203,8 +187,7 @@ class MainActivity : ComponentActivity() {
         if (requestCode == REQUEST_LOCATION_CODE) {
             if (resultCode == RESULT_OK) {
                 val intent = Intent(this, AddListActivity::class.java)
-//                activityResultLauncher.launch(intent)
-                startActivityForResult(intent, ADD_LIST_REQUEST_CODE)
+                startActivity(intent)
             } else {
                 Toast.makeText(this, "Please turn on location services", Toast.LENGTH_SHORT).show()
             }
@@ -212,9 +195,15 @@ class MainActivity : ComponentActivity() {
         if (requestCode == ADD_LIST_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 val action = data?.getStringExtra("action")
+                Log.d(TAG, "onActivityResult: $action")
                 when (action) {
                     "refresh" -> getData()
-                    "show_loading" -> skeleton.showSkeleton()
+                    "show_loading" -> {
+                        binding.noDataImg.visibility = View.GONE
+                        binding.startAddingTxt.visibility = View.GONE
+                        binding.listRV.visibility = carbon.view.View.VISIBLE
+                        skeleton.showSkeleton()
+                    }
                 }
             } else {
                 getData()
@@ -224,6 +213,9 @@ class MainActivity : ComponentActivity() {
 
     private fun getData() {
         val uid = firebaseAuth.currentUser?.uid ?: return
+        binding.noDataImg.visibility = View.GONE
+        binding.startAddingTxt.visibility = View.GONE
+        binding.listRV.visibility = carbon.view.View.VISIBLE
 
         firestore.collection("list")
             .document(uid)
@@ -291,8 +283,7 @@ class MainActivity : ComponentActivity() {
 
         task.addOnSuccessListener {
             val intent = Intent(this, AddListActivity::class.java)
-//                activityResultLauncher.launch(intent)
-            startActivityForResult(intent, ADD_LIST_REQUEST_CODE)
+            startActivity(intent)
         }
 
         task.addOnFailureListener { exception ->

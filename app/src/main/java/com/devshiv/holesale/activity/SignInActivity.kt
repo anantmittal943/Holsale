@@ -79,6 +79,8 @@ class SignInActivity : ComponentActivity() {
                 )
                 handleSignIn(result.credential)
             } catch (e: GetCredentialException) {
+                Toast.makeText(this@SignInActivity, "No Google Account Found", Toast.LENGTH_SHORT)
+                    .show()
                 Log.e(Utils.TAG, "launchCredentialManager: ${e.localizedMessage}", e)
             }
         }

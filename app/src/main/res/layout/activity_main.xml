@@ -30,7 +30,7 @@
             android:fontFamily="@font/overlockregular"
             android:text="Hi, Name"
             android:textColor="@color/background"
-            android:textSize="25sp"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <carbon.widget.EditText

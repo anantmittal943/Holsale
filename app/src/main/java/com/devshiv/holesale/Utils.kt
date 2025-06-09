@@ -1,17 +1,58 @@
 package com.devshiv.holesale
 
+import android.app.Activity
+import android.app.Dialog
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
+import com.devshiv.holesale.databinding.LoadingDialogBinding
 
 class Utils {
 
     companion object {
 
         const val TAG: String = "xyz"
+        var loadingDialog: Dialog? = null
+
+        fun showLoading(
+            activity: Activity,
+            isCancelable: Boolean
+        ) {
+            if (!activity.isFinishing) {
+                loadingDialog = Dialog(activity, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+                val binding: LoadingDialogBinding =
+                    LoadingDialogBinding.inflate(LayoutInflater.from(loadingDialog!!.context))
+                loadingDialog!!.setContentView(binding.root)
+                try {
+//                    loadingDialog!!.window?.setDimAmount(0F)
+                    loadingDialog!!.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    loadingDialog!!.window?.attributes?.windowAnimations =
+                        R.style.MyDialogAnimation_Dialog //style id
+                } catch (e: Exception) {
+                    Log.d(TAG, "showLoading: " + e.message)
+                }
+                loadingDialog!!.setCanceledOnTouchOutside(false)
+                loadingDialog!!.setCancelable(isCancelable)
+                loadingDialog!!.show()
+            }
+        }
+
+        fun cancelLoading() {
+            if (loadingDialog != null && loadingDialog!!.isShowing) {
+                try {
+                    loadingDialog!!.cancel()
+                    loadingDialog = null
+                } catch (e: java.lang.Exception) {
+                    Log.d(TAG, "cancelLoading: " + e.message)
+                }
+            }
+        }
 
         fun Window.transparentStatusBar() {
             setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true)

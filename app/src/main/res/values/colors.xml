@@ -11,4 +11,5 @@
     <color name="ucrop_color_toolbar">@color/colorPrimaryVariant</color>
     <color name="ucrop_color_statusbar">@color/colorPrimaryVariant</color>
     <color name="ucrop_color_widget_active">@color/colorSecondary</color>
+    <color name="transparent_10">#19000000</color>
 </resources>

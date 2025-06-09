@@ -109,13 +109,10 @@ class AddListActivity : AppCompatActivity() {
         }
 
         binding.positiveBtn.setOnClickListener {
-            val phoneNo = binding.addPhoneNoEdTxt.text.toString()
-            val address = binding.addAddressEdTxt.text.toString()
+            val phoneNo = binding.addPhoneNoEdTxt.text.toString().trim()
+            val address = binding.addAddressEdTxt.text.toString().trim()
             if (uploadImageUrl != null && phoneNo.isNotEmpty() && address.isNotEmpty()) {
-                Log.d(TAG, "onCreate: $uploadImageUrl")
                 uploadImg(uploadImageUrl!!, phoneNo, address)
-                onBackPressed()
-//                dialog.dismiss()
             } else {
                 Log.e(TAG, "Either image not uploaded or phone is empty or address is empty")
                 Toast.makeText(this, "Make sure to fill all details!!", Toast.LENGTH_SHORT)
@@ -246,7 +243,8 @@ class AddListActivity : AppCompatActivity() {
 
                 AutocompleteActivity.RESULT_ERROR -> {
                     val status = Autocomplete.getStatusFromIntent(data!!)
-                    Toast.makeText(this, "Error: ${status.statusMessage}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Error: ${status.statusMessage}", Toast.LENGTH_SHORT)
+                        .show()
                 }
 
                 Activity.RESULT_CANCELED -> {
@@ -257,20 +255,16 @@ class AddListActivity : AppCompatActivity() {
     }
 
     private fun uploadImg(fileUri: Uri, phoneNo: String, address: String) {
-//        binding.noDataImg.visibility = View.GONE
-//        binding.startAddingTxt.visibility = View.GONE
-//        binding.listRV.visibility = carbon.view.View.VISIBLE
-//        skeleton.showSkeleton()
-        val resultIntent = Intent()
-        resultIntent.putExtra("action", "show_loading")
-        setResult(Activity.RESULT_OK, resultIntent)
         val uid = firebaseAuth.currentUser?.uid ?: return
         val fileRef = storage.reference.child("users/$uid/${System.currentTimeMillis()}.jpg")
         if (fileUri.toString() != oldImageUrl) {
+            Utils.showLoading(this@AddListActivity, false)
+
             fileRef.putFile(fileUri)
                 .addOnSuccessListener {
                     fileRef.downloadUrl.addOnSuccessListener { downloadUri ->
                         Log.d(TAG, "Image uploaded: $downloadUri")
+                        Utils.cancelLoading()
                         if (isEditing) {
                             updateData(downloadUri, phoneNo, address, docId)
                             isEditing = !isEditing
@@ -282,9 +276,8 @@ class AddListActivity : AppCompatActivity() {
                 }
                 .addOnFailureListener {
                     Log.e(TAG, "Image upload failed", it)
-//                    binding.noDataImg.visibility = View.VISIBLE
-//                    binding.startAddingTxt.visibility = View.VISIBLE
-//                    binding.listRV.visibility = carbon.view.View.GONE
+                    Utils.cancelLoading()
+                    Toast.makeText(this, "Image Upload Failed", Toast.LENGTH_SHORT).show()
                 }
         } else {
             updateData(oldImageUrl.toUri(), phoneNo, address, docId)
@@ -294,6 +287,7 @@ class AddListActivity : AppCompatActivity() {
 
     private fun addData(imageUrl: Uri, phoneNo: String, address: String) {
         val uid = firebaseAuth.currentUser?.uid ?: return
+        Utils.showLoading(this@AddListActivity, false)
 
         val listModel = ListModel(
             imageUrl = imageUrl.toString(),
@@ -308,31 +302,21 @@ class AddListActivity : AppCompatActivity() {
             .collection("items")
             .add(listModel)
             .addOnSuccessListener {
+                Utils.cancelLoading()
                 Toast.makeText(this, "Added successfully", Toast.LENGTH_SHORT).show()
-//                setResult(RESULT_OK)
-                val resultIntent = Intent()
-                resultIntent.putExtra("action", "refresh")
-                setResult(Activity.RESULT_OK, resultIntent)
-//                finish()
-//                binding.noDataImg.visibility = View.GONE
-//                binding.startAddingTxt.visibility = View.GONE
-//                binding.listRV.visibility = View.VISIBLE
+                finish()
                 Log.d(TAG, "Data saved")
             }
             .addOnFailureListener {
+                Utils.cancelLoading()
                 Log.e(TAG, "Failed to save data", it)
-//                binding.noDataImg.visibility = View.VISIBLE
-//                binding.startAddingTxt.visibility = View.VISIBLE
-//                binding.listRV.visibility = carbon.view.View.GONE
             }
-//        getData()
-//        onBackPressed()
     }
 
     private fun deleteData(item: ListModel) {
-//        skeleton.showSkeleton()
         val uid = firebaseAuth.currentUser?.uid ?: return
         val docId = item.id ?: return
+        Utils.showLoading(this@AddListActivity, false)
 
         firestore.collection("list")
             .document(uid)
@@ -340,12 +324,9 @@ class AddListActivity : AppCompatActivity() {
             .document(docId)
             .delete()
             .addOnSuccessListener {
+                Utils.cancelLoading()
                 Toast.makeText(this, "Deleted successfully", Toast.LENGTH_SHORT).show()
-//                setResult(RESULT_OK)
-                val resultIntent = Intent()
-                resultIntent.putExtra("action", "refresh")
-                setResult(Activity.RESULT_OK, resultIntent)
-//                finish()
+                finish()
                 val storageRef = storage.getReferenceFromUrl(item.imageUrl!!)
                 storageRef.delete()
                     .addOnSuccessListener {
@@ -356,13 +337,14 @@ class AddListActivity : AppCompatActivity() {
                     }
             }
             .addOnFailureListener {
+                Utils.cancelLoading()
                 Toast.makeText(this, "Failed to delete", Toast.LENGTH_SHORT).show()
             }
-//        getData()
     }
 
     private fun updateData(newImageUrl: Uri, newPhone: String, newAddress: String, docId: String) {
         val uid = firebaseAuth.currentUser?.uid ?: return
+        Utils.showLoading(this@AddListActivity, false)
 
         val updatedModel = mapOf(
             "imageUrl" to newImageUrl.toString(),
@@ -378,11 +360,7 @@ class AddListActivity : AppCompatActivity() {
             .update(updatedModel)
             .addOnSuccessListener {
                 Toast.makeText(this, "Updated successfully", Toast.LENGTH_SHORT).show()
-//                setResult(RESULT_OK)
-                val resultIntent = Intent()
-                resultIntent.putExtra("action", "refresh")
-                setResult(Activity.RESULT_OK, resultIntent)
-//                finish()
+                finish()
                 if (newImageUrl.toString() != oldImageUrl) {
                     val storageRef = storage.getReferenceFromUrl(oldImageUrl)
                     storageRef.delete()
@@ -397,7 +375,11 @@ class AddListActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show()
             }
-//        getData()
+    }
+
+    override fun onBackPressed() {
+//        super.onBackPressed()
+        finish()
     }
 
     companion object {
