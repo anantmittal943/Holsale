@@ -163,25 +163,32 @@ class MainActivity : ComponentActivity() {
             }*/
 
             binding.addListBtn.setOnClickListener {
-//                checkLocationEnabled()
+                checkLocationEnabled()
                 /*fetchCurrentAddress { address ->
                     addAddressEdTxt.setText(address)
                     Log.d(TAG, "address: $address")
                 }*/
 //                dialog.show()
-                val intent = Intent(this, AddListActivity::class.java)
+//                val intent = Intent(this, AddListActivity::class.java)
 //                activityResultLauncher.launch(intent)
-                startActivityForResult(intent, ADD_LIST_REQUEST_CODE)
+//                startActivityForResult(intent, ADD_LIST_REQUEST_CODE)
 //                onPause()
             }
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart: ")
+        skeleton.showSkeleton()
+        getData()
+    }
+
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume: ")
-        skeleton.showSkeleton()
-        getData()
+//        skeleton.showSkeleton()
+//        getData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -195,10 +202,9 @@ class MainActivity : ComponentActivity() {
         }
         if (requestCode == REQUEST_LOCATION_CODE) {
             if (resultCode == RESULT_OK) {
-                fetchCurrentAddress { address ->
-//                    addAddressEdTxt.setText(address)
-                    Log.d(TAG, "address: $address")
-                }
+                val intent = Intent(this, AddListActivity::class.java)
+//                activityResultLauncher.launch(intent)
+                startActivityForResult(intent, ADD_LIST_REQUEST_CODE)
             } else {
                 Toast.makeText(this, "Please turn on location services", Toast.LENGTH_SHORT).show()
             }
@@ -214,130 +220,6 @@ class MainActivity : ComponentActivity() {
                 getData()
             }
         }
-    }
-
-    private fun uploadImg(fileUri: Uri, phoneNo: String, address: String) {
-        binding.noDataImg.visibility = View.GONE
-        binding.startAddingTxt.visibility = View.GONE
-        binding.listRV.visibility = carbon.view.View.VISIBLE
-        skeleton.showSkeleton()
-        val uid = firebaseAuth.currentUser?.uid ?: return
-        val fileRef = storage.reference.child("users/$uid/${System.currentTimeMillis()}.jpg")
-        if (fileUri.toString() != oldImageUrl) {
-            fileRef.putFile(fileUri)
-                .addOnSuccessListener {
-                    fileRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                        Log.d(TAG, "Image uploaded: $downloadUri")
-                        if (isEditing) {
-                            updateData(downloadUri, phoneNo, address, docId)
-                            isEditing = !isEditing
-                        } else {
-                            addData(downloadUri, phoneNo, address)
-                        }
-                    }
-                }
-                .addOnFailureListener {
-                    Log.e(TAG, "Image upload failed", it)
-                    binding.noDataImg.visibility = View.VISIBLE
-                    binding.startAddingTxt.visibility = View.VISIBLE
-                    binding.listRV.visibility = carbon.view.View.GONE
-                }
-        } else {
-            updateData(oldImageUrl.toUri(), phoneNo, address, docId)
-            isEditing = false
-        }
-    }
-
-    private fun addData(imageUrl: Uri, phoneNo: String, address: String) {
-        val uid = firebaseAuth.currentUser?.uid ?: return
-
-        val listModel = ListModel(
-            imageUrl = imageUrl.toString(),
-            phoneNumber = phoneNo,
-            address = address,
-            createdAt = ListModel.getCurrentTime(),
-            updatedAt = ListModel.getCurrentTime(),
-        )
-
-        firestore.collection("list")
-            .document(uid)
-            .collection("items")
-            .add(listModel)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Added successfully", Toast.LENGTH_SHORT).show()
-                binding.noDataImg.visibility = View.GONE
-                binding.startAddingTxt.visibility = View.GONE
-                binding.listRV.visibility = View.VISIBLE
-                Log.d(TAG, "Data saved")
-            }
-            .addOnFailureListener {
-                Log.e(TAG, "Failed to save data", it)
-                binding.noDataImg.visibility = View.VISIBLE
-                binding.startAddingTxt.visibility = View.VISIBLE
-                binding.listRV.visibility = carbon.view.View.GONE
-            }
-        getData()
-    }
-
-    private fun deleteData(item: ListModel) {
-        skeleton.showSkeleton()
-        val uid = firebaseAuth.currentUser?.uid ?: return
-        val docId = item.id ?: return
-
-        firestore.collection("list")
-            .document(uid)
-            .collection("items")
-            .document(docId)
-            .delete()
-            .addOnSuccessListener {
-                Toast.makeText(this, "Deleted successfully", Toast.LENGTH_SHORT).show()
-                val storageRef = storage.getReferenceFromUrl(item.imageUrl!!)
-                storageRef.delete()
-                    .addOnSuccessListener {
-                        Log.d(TAG, "Image deleted from storage")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e(TAG, "Failed to delete image from storage", e)
-                    }
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Failed to delete", Toast.LENGTH_SHORT).show()
-            }
-        getData()
-    }
-
-    private fun updateData(newImageUrl: Uri, newPhone: String, newAddress: String, docId: String) {
-        val uid = firebaseAuth.currentUser?.uid ?: return
-
-        val updatedModel = mapOf(
-            "imageUrl" to newImageUrl.toString(),
-            "phoneNumber" to newPhone,
-            "address" to newAddress,
-            "updatedAt" to ListModel.getCurrentTime()
-        )
-
-        firestore.collection("list")
-            .document(uid)
-            .collection("items")
-            .document(docId)
-            .update(updatedModel)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Updated successfully", Toast.LENGTH_SHORT).show()
-                if (newImageUrl.toString() != oldImageUrl) {
-                    val storageRef = storage.getReferenceFromUrl(oldImageUrl)
-                    storageRef.delete()
-                        .addOnSuccessListener {
-                            Log.d(TAG, "Image deleted from storage")
-                        }
-                        .addOnFailureListener { e ->
-                            Log.e(TAG, "Failed to delete image from storage", e)
-                        }
-                }
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show()
-            }
-        getData()
     }
 
     private fun getData() {
@@ -383,76 +265,6 @@ class MainActivity : ComponentActivity() {
         mainAdapter.updateList(filteredList)
     }
 
-    private fun fetchCurrentAddress(onAddressFetched: (String) -> Unit) {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            pendingAddressCallback = onAddressFetched
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                ADDRESS_LOCATION_PERMISSION_REQUEST_CODE
-            )
-            Log.e(TAG, "fetchCurrentAddress: permission not granted or denied")
-            return
-        } else {
-            val fusedClientLocation = LocationServices.getFusedLocationProviderClient(this)
-            fusedClientLocation.getLastLocation()
-                .addOnSuccessListener { location ->
-                    if (location != null) {
-                        val geocoder = Geocoder(this, Locale.getDefault())
-                        val addresses =
-                            geocoder.getFromLocation(location.latitude, location.longitude, 1)
-
-                        if (!addresses.isNullOrEmpty()) {
-                            val address = addresses[0].getAddressLine(0)
-                            onAddressFetched(address)
-                        } else {
-                            Toast.makeText(this, "Address not found!!", Toast.LENGTH_SHORT).show()
-                            onAddressFetched("")
-                            addAddressEdTxt.hint = "Add address manually"
-                        }
-                    } else {
-//                        checkLocationEnabled()
-//                        Toast.makeText(this, "Location is null!!", Toast.LENGTH_SHORT).show()
-                        onAddressFetched("")
-                        addAddressEdTxt.hint = "Add address manually"
-                    }
-                }
-                .addOnFailureListener {
-//                    checkLocationEnabled()
-                    Log.e("Location", "Failed to get location", it)
-                    Toast.makeText(this, "Failed to get Location", Toast.LENGTH_SHORT).show()
-                    onAddressFetched("")
-                    addAddressEdTxt.hint = "Add address manually"
-                }
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray,
-        deviceId: Int
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults, deviceId)
-        if (requestCode == ADDRESS_LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                pendingAddressCallback?.let {
-                    fetchCurrentAddress(it)
-                    pendingAddressCallback = null
-                }
-            } else {
-                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
-                addAddressEdTxt.hint = "Add address manually"
-                pendingAddressCallback?.invoke("")
-                pendingAddressCallback = null
-            }
-        }
-    }
-
     override fun onBackPressed() {
         if (binding.searchBox.isVisible) {
             binding.searchBox.setText("")
@@ -478,10 +290,9 @@ class MainActivity : ComponentActivity() {
         val task = client.checkLocationSettings(builder.build())
 
         task.addOnSuccessListener {
-            fetchCurrentAddress { address ->
-//                addAddressEdTxt.setText(address)
-                Log.d(TAG, "address: $address")
-            }
+            val intent = Intent(this, AddListActivity::class.java)
+//                activityResultLauncher.launch(intent)
+            startActivityForResult(intent, ADD_LIST_REQUEST_CODE)
         }
 
         task.addOnFailureListener { exception ->
@@ -500,7 +311,6 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         private const val IMAGE_PICKER_REQUEST_CODE = 1001
-        private const val ADDRESS_LOCATION_PERMISSION_REQUEST_CODE = 1010
         private const val REQUEST_LOCATION_CODE = 101
         private const val ADD_LIST_REQUEST_CODE = 9981
     }

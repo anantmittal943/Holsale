@@ -234,16 +234,7 @@ class AddListActivity : AppCompatActivity() {
                 .placeholder(R.drawable.ic_image_not_found)
                 .into(binding.imagePreview)
         }
-        if (requestCode == REQUEST_LOCATION_CODE) {
-            if (resultCode == RESULT_OK) {
-                /*fetchCurrentAddress { address ->
-                    binding.addAddressEdTxt.setText(address)
-                    Log.d(TAG, "address: $address")
-                }*/
-            } else {
-                Toast.makeText(this, "Please turn on location services", Toast.LENGTH_SHORT).show()
-            }
-        }
+
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             when (resultCode) {
                 Activity.RESULT_OK -> {
@@ -409,149 +400,8 @@ class AddListActivity : AppCompatActivity() {
 //        getData()
     }
 
-    /*private fun getData() {
-        val uid = firebaseAuth.currentUser?.uid ?: return
-
-        firestore.collection("list")
-            .document(uid)
-            .collection("items")
-            .get()
-            .addOnSuccessListener { result ->
-                listModel.clear()
-                for (document in result) {
-                    val model = document.toObject(ListModel::class.java).copy(id = document.id)
-                    Log.d(TAG, "getData: ${document.id}\n${document.data}")
-                    listModel.add(model)
-                }
-                if (listModel.isNotEmpty()) {
-                    skeleton.showOriginal()
-//                    binding.noDataImg.visibility = View.GONE
-//                    binding.startAddingTxt.visibility = View.GONE
-//                    binding.listRV.visibility = carbon.view.View.VISIBLE
-                    mainAdapter.notifyDataSetChanged()
-                } else {
-                    skeleton.showOriginal()
-//                    binding.noDataImg.visibility = View.VISIBLE
-//                    binding.startAddingTxt.visibility = View.VISIBLE
-//                    binding.listRV.visibility = carbon.view.View.GONE
-                }
-            }
-            .addOnFailureListener { e ->
-                skeleton.showOriginal()
-//                binding.noDataImg.visibility = View.VISIBLE
-//                binding.startAddingTxt.visibility = View.VISIBLE
-//                binding.listRV.visibility = carbon.view.View.GONE
-                Log.e(TAG, "getData: exception", e)
-            }
-    }*/
-
-    private fun fetchCurrentAddress(onAddressFetched: (String) -> Unit) {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            pendingAddressCallback = onAddressFetched
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                ADDRESS_LOCATION_PERMISSION_REQUEST_CODE
-            )
-            Log.e(TAG, "fetchCurrentAddress: permission not granted or denied")
-            return
-        } else {
-            val fusedClientLocation = LocationServices.getFusedLocationProviderClient(this)
-            fusedClientLocation.getLastLocation()
-                .addOnSuccessListener { location ->
-                    if (location != null) {
-                        val geocoder = Geocoder(this, Locale.getDefault())
-                        val addresses =
-                            geocoder.getFromLocation(location.latitude, location.longitude, 1)
-
-                        if (!addresses.isNullOrEmpty()) {
-                            val address = addresses[0].getAddressLine(0)
-                            onAddressFetched(address)
-                        } else {
-                            Toast.makeText(this, "Address not found!!", Toast.LENGTH_SHORT).show()
-                            onAddressFetched("")
-                            binding.addAddressEdTxt.hint = "Add address manually"
-                        }
-                    } else {
-//                        checkLocationEnabled()
-//                        Toast.makeText(this, "Location is null!!", Toast.LENGTH_SHORT).show()
-                        onAddressFetched("")
-                        binding.addAddressEdTxt.hint = "Add address manually"
-                    }
-                }
-                .addOnFailureListener {
-//                    checkLocationEnabled()
-                    Log.e("Location", "Failed to get location", it)
-                    Toast.makeText(this, "Failed to get Location", Toast.LENGTH_SHORT).show()
-                    onAddressFetched("")
-                    binding.addAddressEdTxt.hint = "Add address manually"
-                }
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray,
-        deviceId: Int
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults, deviceId)
-        if (requestCode == ADDRESS_LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                pendingAddressCallback?.let {
-                    fetchCurrentAddress(it)
-                    pendingAddressCallback = null
-                }
-            } else {
-                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
-                binding.addAddressEdTxt.hint = "Add address manually"
-                pendingAddressCallback?.invoke("")
-                pendingAddressCallback = null
-            }
-        }
-    }
-
-    private fun checkLocationEnabled() {
-        val locationRequest = LocationRequest.create().apply {
-            priority = Priority.PRIORITY_HIGH_ACCURACY
-        }
-
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
-            .setAlwaysShow(true) // shows dialog even if previously cancelled
-
-        val client: SettingsClient = LocationServices.getSettingsClient(this)
-        val task = client.checkLocationSettings(builder.build())
-
-        task.addOnSuccessListener {
-            /*fetchCurrentAddress { address ->
-                binding.addAddressEdTxt.setText(address)
-                Log.d(TAG, "address: $address")
-            }*/
-        }
-
-        task.addOnFailureListener { exception ->
-            if (exception is ResolvableApiException) {
-                try {
-                    exception.startResolutionForResult(this@AddListActivity, REQUEST_LOCATION_CODE)
-                } catch (sendEx: IntentSender.SendIntentException) {
-                    Log.e("LocationCheck", "Error showing dialog: ${sendEx.message}")
-                }
-            } else {
-                Toast.makeText(this, "Location is required but not available", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
-    }
-
     companion object {
         private const val IMAGE_PICKER_REQUEST_CODE = 1001
-        private const val ADDRESS_LOCATION_PERMISSION_REQUEST_CODE = 1010
-        private const val REQUEST_LOCATION_CODE = 101
         private const val AUTOCOMPLETE_REQUEST_CODE = 9981
     }
 }
